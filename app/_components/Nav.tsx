@@ -76,12 +76,12 @@ export default function Nav() {
               onMouseEnter={e => {
                 (e.currentTarget as HTMLElement).style.backgroundImage =
                   "linear-gradient(135deg, #C8A84B, #4ECDC4), linear-gradient(135deg, #C8A84B, #4ECDC4)";
-                (e.currentTarget as HTMLElement).style.WebkitTextFillColor = "#060D10";
+                (e.currentTarget as HTMLElement).style.webkitTextFillColor = "#060D10";
               }}
               onMouseLeave={e => {
                 (e.currentTarget as HTMLElement).style.backgroundImage =
                   "linear-gradient(var(--background), var(--background)), linear-gradient(135deg, #C8A84B, #4ECDC4)";
-                (e.currentTarget as HTMLElement).style.WebkitTextFillColor = "";
+                (e.currentTarget as HTMLElement).style.webkitTextFillColor = "";
               }}
             >
               HIRE ME
