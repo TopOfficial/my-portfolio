@@ -1,26 +1,64 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #060D10;
+  --surface: #0A1820;
+  --surface-2: #0F2230;
+  --foreground: #F0EBD8;
+  --muted: #5A8090;
+  --muted-dim: #2A3840;
+  --accent: #C8A84B;
+  --accent-coral: #E8705E;
+  --accent-cyan: #4ECDC4;
+  --accent-dim: rgba(200, 168, 75, 0.1);
+  --border: rgba(255, 255, 255, 0.07);
+  --border-accent: rgba(200, 168, 75, 0.2);
+  --border-cyan: rgba(78, 205, 196, 0.18);
+  --font-display: var(--font-cormorant);
+  --font-sans: var(--font-syne);
+  --font-mono: var(--font-jetbrains);
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --color-muted-dim: var(--muted-dim);
+  --color-accent: var(--accent);
+  --color-accent-coral: var(--accent-coral);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-border: var(--border);
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-image:
+    radial-gradient(ellipse 60% 50% at 0% 0%, rgba(78, 205, 196, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 100%, rgba(232, 112, 94, 0.04) 0%, transparent 60%);
+}
+
+/* Film grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.035;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--background);
 }
