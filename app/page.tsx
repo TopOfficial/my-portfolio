@@ -1,5 +1,6 @@
 import Nav from "./_components/Nav";
 import Hero from "./_components/Hero";
+import Ticker from "./_components/Ticker";
 import Projects from "./_components/Projects";
 import Experience from "./_components/Experience";
 import About from "./_components/About";
@@ -12,6 +13,7 @@ export default function Page() {
       <Nav />
       <main>
         <Hero />
+        <Ticker />
         <Projects />
         <Experience />
         <About />

@@ -1,21 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --background: #060D10;
-  --surface: #0A1820;
-  --surface-2: #0F2230;
-  --foreground: #F0EBD8;
-  --muted: #5A8090;
-  --muted-dim: #2A3840;
-  --accent: #C8A84B;
-  --accent-coral: #E8705E;
-  --accent-cyan: #4ECDC4;
-  --accent-dim: rgba(200, 168, 75, 0.1);
-  --border: rgba(255, 255, 255, 0.07);
-  --border-accent: rgba(200, 168, 75, 0.2);
-  --border-cyan: rgba(78, 205, 196, 0.18);
-  --font-display: var(--font-cormorant);
-  --font-sans: var(--font-syne);
+  --background: #FAFAF8;
+  --surface: #F3EFE4;
+  --surface-2: #EAE4D6;
+  --foreground: #0C0A09;
+  --muted: #5C5244;
+  --muted-dim: #C4B9A8;
+  --accent: #B8921A;
+  --accent-bright: #D4AF37;
+  --accent-deep: #8A6B10;
+  --accent-pale: #E8D5A0;
+  --accent-dim: rgba(184, 146, 26, 0.12);
+  --border: rgba(12, 10, 9, 0.09);
+  --border-accent: rgba(184, 146, 26, 0.30);
+  --font-display: var(--font-bodoni);
+  --font-sans: var(--font-space);
   --font-mono: var(--font-jetbrains);
 }
 
@@ -27,8 +27,6 @@
   --color-muted: var(--muted);
   --color-muted-dim: var(--muted-dim);
   --color-accent: var(--accent);
-  --color-accent-coral: var(--accent-coral);
-  --color-accent-cyan: var(--accent-cyan);
   --color-border: var(--border);
   --font-display: var(--font-display);
   --font-sans: var(--font-sans);
@@ -43,8 +41,21 @@ body {
   background: var(--background);
   color: var(--foreground);
   background-image:
-    radial-gradient(ellipse 60% 50% at 0% 0%, rgba(78, 205, 196, 0.05) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 100% 100%, rgba(232, 112, 94, 0.04) 0%, transparent 60%);
+    radial-gradient(ellipse 70% 50% at 5% 0%, rgba(184, 146, 26, 0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 95% 100%, rgba(212, 175, 55, 0.05) 0%, transparent 55%);
+}
+
+/* Subtle geometric grid overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(184, 146, 26, 0.032) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(184, 146, 26, 0.032) 1px, transparent 1px);
+  background-size: 80px 80px;
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* Film grain overlay */
@@ -53,12 +64,81 @@ body::before {
   position: fixed;
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.035;
+  opacity: 0.03;
   pointer-events: none;
-  z-index: 9999;
+  z-index: 0;
+}
+
+/* Metallic shimmer for hero name */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    #8A6B10 0%,
+    #D4AF37 20%,
+    #F5E878 40%,
+    #D4AF37 60%,
+    #8A6B10 80%,
+    #D4AF37 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 5s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer-text {
+    background: linear-gradient(135deg, #0C0A09 40%, #B8921A 100%);
+    background-size: auto;
+    animation: none;
+  }
+}
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation-play-state: paused;
+  }
+}
+
+/* Floating gold orb drift animations */
+@keyframes orb-drift-a {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(16px, -22px); }
+  50% { transform: translate(-12px, -36px); }
+  75% { transform: translate(-22px, -10px); }
+}
+@keyframes orb-drift-b {
+  0%, 100% { transform: translate(0, 0); }
+  30% { transform: translate(-20px, 24px); }
+  60% { transform: translate(24px, 30px); }
+  80% { transform: translate(10px, -14px); }
+}
+@keyframes orb-drift-c {
+  0%, 100% { transform: translate(0, 0); }
+  40% { transform: translate(28px, -18px); }
+  70% { transform: translate(-10px, 26px); }
+}
+
+.orb-drift-a { animation: orb-drift-a 11s ease-in-out infinite; }
+.orb-drift-b { animation: orb-drift-b 14s ease-in-out infinite; }
+.orb-drift-c { animation: orb-drift-c 9s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .orb-drift-a, .orb-drift-b, .orb-drift-c { animation: none; }
 }
 
 ::selection {
-  background: var(--accent);
-  color: var(--background);
+  background: var(--accent-bright);
+  color: #0C0A09;
 }

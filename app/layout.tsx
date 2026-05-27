@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Syne, JetBrains_Mono } from "next/font/google";
+import { Bodoni_Moda, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const cormorant = Cormorant_Garamond({
+const bodoni = Bodoni_Moda({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
-  variable: "--font-cormorant",
+  variable: "--font-bodoni",
 });
 
-const syne = Syne({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--font-syne",
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-space",
 });
 
 const jetbrains = JetBrains_Mono({
@@ -35,8 +36,8 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${syne.variable} ${jetbrains.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-[--background] text-[--foreground] font-sans">
+    <html lang="en" className={`${bodoni.variable} ${spaceGrotesk.variable} ${jetbrains.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col bg-[--background] text-[--foreground] font-sans overflow-x-hidden">
         {children}
       </body>
     </html>

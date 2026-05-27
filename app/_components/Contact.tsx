@@ -20,10 +20,10 @@ function LinkedinIcon({ size = 16 }: { size?: number }) {
 }
 
 const socials = [
-  { label: "GitHub", handle: "github.com/TopOfficial", href: "https://github.com/TopOfficial", icon: GithubIcon, accentColor: "#4ECDC4" },
-  { label: "LinkedIn", handle: "linkedin.com/in/suriya-chaubey", href: "https://linkedin.com/in/suriya-chaubey", icon: LinkedinIcon, accentColor: "#C8A84B" },
-  { label: "Email", handle: "suriyachaubey@gmail.com", href: "mailto:suriyachaubey@gmail.com", icon: Mail, accentColor: "#E8705E" },
-  { label: "Phone", handle: "+66 82 532 4267", href: "tel:+66825324267", icon: Phone, accentColor: "#4ECDC4" },
+  { label: "GitHub", handle: "github.com/TopOfficial", href: "https://github.com/TopOfficial", icon: GithubIcon, accentColor: "#D4AF37" },
+  { label: "LinkedIn", handle: "linkedin.com/in/suriya-chaubey", href: "https://linkedin.com/in/suriya-chaubey", icon: LinkedinIcon, accentColor: "#B8921A" },
+  { label: "Email", handle: "suriyachaubey@gmail.com", href: "mailto:suriyachaubey@gmail.com", icon: Mail, accentColor: "#C9A030" },
+  { label: "Phone", handle: "+66 82 532 4267", href: "tel:+66825324267", icon: Phone, accentColor: "#9A7A10" },
 ];
 
 export default function Contact() {
@@ -33,32 +33,17 @@ export default function Contact() {
       {/* Strong atmospheric orbs */}
       <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute -top-20 left-1/4 w-[500px] h-[500px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(200,168,75,0.08) 0%, transparent 65%)", filter: "blur(50px)" }} />
+          style={{ background: "radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 65%)", filter: "blur(50px)" }} />
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(78,205,196,0.07) 0%, transparent 65%)", filter: "blur(60px)" }} />
+          style={{ background: "radial-gradient(circle, rgba(184,146,26,0.07) 0%, transparent 65%)", filter: "blur(60px)" }} />
         <div className="absolute top-1/2 -left-20 w-[300px] h-[300px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(232,112,94,0.05) 0%, transparent 65%)", filter: "blur(50px)" }} />
+          style={{ background: "radial-gradient(circle, rgba(138,107,16,0.05) 0%, transparent 65%)", filter: "blur(50px)" }} />
       </div>
 
       {/* Background numeral */}
       <div aria-hidden className="absolute left-0 top-16 font-display italic text-[--foreground] select-none pointer-events-none leading-none"
         style={{ fontSize: "clamp(180px, 25vw, 320px)", opacity: 0.025 }}>
         04
-      </div>
-
-      {/* Small botanical leaf top-right */}
-      <div aria-hidden className="absolute top-0 right-0 w-[280px] h-[360px] pointer-events-none opacity-[0.07]"
-        style={{ transform: "translate(30%, -10%) rotate(20deg)" }}>
-        <svg viewBox="0 0 280 360" fill="none" className="w-full h-full">
-          <defs>
-            <linearGradient id="leafContact" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#C8A84B" />
-              <stop offset="100%" stopColor="#4ECDC4" />
-            </linearGradient>
-          </defs>
-          <path d="M140,10 C210,10 265,70 265,160 C265,250 210,330 140,350 C70,330 15,250 15,160 C15,70 70,10 140,10Z" fill="url(#leafContact)" />
-          <path d="M140,10 L140,350" stroke="rgba(200,168,75,0.5)" strokeWidth="0.8" />
-        </svg>
       </div>
 
       <div className="max-w-6xl mx-auto relative">
@@ -71,11 +56,11 @@ export default function Contact() {
         >
           <div className="flex items-center gap-4">
             <span className="font-mono text-[11px] tracking-[0.25em]"
-              style={{ background: "linear-gradient(90deg, #E8705E, #C8A84B)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+              style={{ background: "linear-gradient(90deg, #8A6B10, #D4AF37)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
               04 —
             </span>
             <span className="font-mono text-[11px] text-[--muted] tracking-[0.18em]">CONTACT</span>
-            <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(232,112,94,0.3), transparent)" }} />
+            <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(184,146,26,0.3), transparent)" }} />
           </div>
         </motion.div>
 
@@ -92,7 +77,7 @@ export default function Contact() {
               style={{ fontSize: "clamp(36px, 5.5vw, 70px)" }}>
               Let&apos;s build<br />
               <span style={{
-                background: "linear-gradient(135deg, #C8A84B 0%, #E8705E 100%)",
+                background: "linear-gradient(135deg, #B8921A 0%, #D4AF37 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -108,7 +93,7 @@ export default function Contact() {
 
             <a href="mailto:suriyachaubey@gmail.com"
               className="inline-flex items-center gap-3 font-mono text-[11px] tracking-[0.2em] px-8 py-4 text-[--background] hover:brightness-110 transition-all"
-              style={{ background: "linear-gradient(135deg, #C8A84B 0%, #E8705E 100%)" }}>
+              style={{ background: "linear-gradient(135deg, #8A6B10 0%, #D4AF37 100%)" }}>
               SAY HELLO
               <span>→</span>
             </a>

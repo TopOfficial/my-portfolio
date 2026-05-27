@@ -21,21 +21,20 @@ export default function Nav() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? "border-b border-[--border]"
-          : "bg-transparent"
+        scrolled ? "border-b border-[--border]" : "bg-transparent"
       }`}
       style={scrolled ? {
-        background: "rgba(6, 13, 16, 0.92)",
+        background: "rgba(250, 250, 248, 0.94)",
         backdropFilter: "blur(16px)",
+        boxShadow: "0 1px 0 rgba(184,146,26,0.12)",
       } : undefined}
     >
       <nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <a href="#" className="flex items-center gap-3 group">
+        <a href="#" className="flex items-center gap-3 group cursor-pointer">
           <span
             className="font-mono text-xs font-medium tracking-[0.2em]"
             style={{
-              background: "linear-gradient(135deg, #C8A84B 0%, #4ECDC4 100%)",
+              background: "linear-gradient(135deg, #8A6B10, #D4AF37)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
@@ -52,8 +51,8 @@ export default function Nav() {
         <ul className="hidden md:flex items-center gap-8">
           {links.map(({ label, href, num }) => (
             <li key={label}>
-              <a href={href} className="flex items-center gap-1.5 group">
-                <span className="font-mono text-[10px] text-[--muted] group-hover:text-[--accent-cyan] transition-colors">
+              <a href={href} className="flex items-center gap-1.5 group cursor-pointer">
+                <span className="font-mono text-[10px] text-[--muted] group-hover:text-[--accent] transition-colors">
                   {num}
                 </span>
                 <span className="text-sm text-[--muted] group-hover:text-[--foreground] transition-colors">
@@ -62,25 +61,32 @@ export default function Nav() {
               </a>
             </li>
           ))}
+          <li className="flex items-center gap-1.5">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: "#10B981" }} />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ background: "#10B981" }} />
+            </span>
+            <span className="font-mono text-[10px] tracking-[0.15em]" style={{ color: "#10B981" }}>AVAILABLE</span>
+          </li>
           <li>
             <a
               href="mailto:suriyachaubey@gmail.com"
-              className="relative font-mono text-[11px] tracking-[0.15em] px-4 py-2 text-[--accent] transition-all duration-200 hover:text-[--background]"
+              className="font-mono text-[11px] tracking-[0.15em] px-4 py-2 cursor-pointer transition-all duration-200"
               style={{
-                background: "transparent",
-                border: "1px solid transparent",
-                backgroundImage: "linear-gradient(var(--background), var(--background)), linear-gradient(135deg, #C8A84B, #4ECDC4)",
+                color: "#B8921A",
+                backgroundImage: "linear-gradient(var(--background), var(--background)), linear-gradient(135deg, #B8921A, #D4AF37)",
                 backgroundOrigin: "border-box",
                 backgroundClip: "padding-box, border-box",
+                border: "1px solid transparent",
               }}
               onMouseEnter={e => {
                 (e.currentTarget as HTMLElement).style.backgroundImage =
-                  "linear-gradient(135deg, #C8A84B, #4ECDC4), linear-gradient(135deg, #C8A84B, #4ECDC4)";
-                (e.currentTarget as HTMLElement).style.webkitTextFillColor = "#060D10";
+                  "linear-gradient(135deg, #B8921A, #D4AF37), linear-gradient(135deg, #B8921A, #D4AF37)";
+                (e.currentTarget as HTMLElement).style.webkitTextFillColor = "#0C0A09";
               }}
               onMouseLeave={e => {
                 (e.currentTarget as HTMLElement).style.backgroundImage =
-                  "linear-gradient(var(--background), var(--background)), linear-gradient(135deg, #C8A84B, #4ECDC4)";
+                  "linear-gradient(var(--background), var(--background)), linear-gradient(135deg, #B8921A, #D4AF37)";
                 (e.currentTarget as HTMLElement).style.webkitTextFillColor = "";
               }}
             >

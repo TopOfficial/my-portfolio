@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Mail } from "lucide-react";
+import { useEffect, useState } from "react";
 
 function GithubIcon({ size = 13 }: { size?: number }) {
   return (
@@ -19,89 +20,58 @@ function LinkedinIcon({ size = 13 }: { size?: number }) {
   );
 }
 
+const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz·/";
+
+function useScramble(text: string, delayMs: number = 0) {
+  const [display, setDisplay] = useState(text);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setDisplay(text);
+      return;
+    }
+    setDisplay(
+      text.split("").map(c => c === " " ? " " : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]).join("")
+    );
+    const timeout = setTimeout(() => {
+      let frame = 0;
+      const totalFrames = 22;
+      const interval = setInterval(() => {
+        frame++;
+        if (frame >= totalFrames) { setDisplay(text); clearInterval(interval); return; }
+        setDisplay(
+          text.split("").map((char, i) =>
+            char === " " ? " " :
+            i < Math.floor((frame / totalFrames) * text.length) ? char :
+            SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
+          ).join("")
+        );
+      }, 38);
+      return () => clearInterval(interval);
+    }, delayMs);
+    return () => clearTimeout(timeout);
+  }, []); // eslint-disable-line
+
+  return display;
+}
+
 export default function Hero() {
+  const roleText = useScramble("AI / ML Engineer · Data Engineer", 1100);
+
   return (
     <section className="relative min-h-screen flex flex-col justify-center px-6 pt-16 overflow-hidden">
 
-      {/* Atmospheric glow orbs */}
+      {/* Gold atmospheric glows */}
       <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* Gold orb — top right */}
-        <div className="absolute -top-20 -right-20 w-[520px] h-[520px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(200,168,75,0.10) 0%, transparent 70%)", filter: "blur(40px)" }} />
-        {/* Coral orb — bottom left */}
-        <div className="absolute bottom-0 -left-20 w-[420px] h-[420px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(232,112,94,0.08) 0%, transparent 70%)", filter: "blur(50px)" }} />
-        {/* Cyan orb — center top */}
-        <div className="absolute top-1/4 left-1/3 w-[360px] h-[360px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(78,205,196,0.06) 0%, transparent 70%)", filter: "blur(60px)" }} />
+        <div className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(212,175,55,0.10) 0%, transparent 65%)", filter: "blur(60px)" }} />
+        <div className="absolute bottom-0 -left-20 w-[500px] h-[500px] rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(184,146,26,0.08) 0%, transparent 65%)", filter: "blur(70px)" }} />
       </div>
 
-      {/* Large botanical leaf — top right */}
-      <div aria-hidden className="absolute -top-10 right-0 w-[480px] h-[640px] pointer-events-none opacity-[0.08] translate-x-1/4"
-        style={{ transform: "translateX(20%) rotate(-18deg)" }}>
-        <svg viewBox="0 0 400 560" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-          <defs>
-            <linearGradient id="leafHero" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#4ECDC4" />
-              <stop offset="50%" stopColor="#C8A84B" />
-              <stop offset="100%" stopColor="#E8705E" />
-            </linearGradient>
-          </defs>
-          <path d="M200,20 C290,20 360,90 380,200 C400,310 370,430 300,500 C250,540 150,540 100,500 C30,430 0,310 20,200 C40,90 110,20 200,20Z" fill="url(#leafHero)" />
-          <path d="M200,20 C200,20 200,280 200,540" stroke="rgba(200,168,75,0.4)" strokeWidth="1" />
-          <path d="M200,150 C240,170 280,180 310,200" stroke="rgba(200,168,75,0.3)" strokeWidth="0.8" />
-          <path d="M200,220 C240,240 270,250 300,270" stroke="rgba(200,168,75,0.3)" strokeWidth="0.8" />
-          <path d="M200,290 C230,310 255,320 278,340" stroke="rgba(200,168,75,0.25)" strokeWidth="0.8" />
-          <path d="M200,150 C160,170 120,180 90,200" stroke="rgba(78,205,196,0.3)" strokeWidth="0.8" />
-          <path d="M200,220 C160,240 130,250 100,270" stroke="rgba(78,205,196,0.3)" strokeWidth="0.8" />
-        </svg>
-      </div>
+      <div className="max-w-6xl w-full mx-auto relative" style={{ zIndex: 1 }}>
 
-      {/* Constellation background */}
-      <div aria-hidden className="absolute inset-0 pointer-events-none opacity-[0.06]">
-        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-          <g fill="none" stroke="rgba(200,168,75,0.6)" strokeWidth="0.5">
-            <line x1="5%" y1="15%" x2="18%" y2="30%" />
-            <line x1="18%" y1="30%" x2="35%" y2="22%" />
-            <line x1="35%" y1="22%" x2="48%" y2="40%" />
-            <line x1="70%" y1="10%" x2="82%" y2="25%" />
-            <line x1="82%" y1="25%" x2="90%" y2="18%" />
-            <line x1="10%" y1="70%" x2="22%" y2="60%" />
-            <line x1="22%" y1="60%" x2="30%" y2="75%" />
-            <line x1="75%" y1="65%" x2="88%" y2="72%" />
-          </g>
-          <g fill="rgba(200,168,75,0.7)">
-            <circle cx="5%" cy="15%" r="1.5" />
-            <circle cx="18%" cy="30%" r="2" />
-            <circle cx="35%" cy="22%" r="1.5" />
-            <circle cx="48%" cy="40%" r="1" />
-            <circle cx="70%" cy="10%" r="2" />
-            <circle cx="82%" cy="25%" r="1.5" />
-            <circle cx="90%" cy="18%" r="1" />
-            <circle cx="10%" cy="70%" r="1.5" />
-            <circle cx="22%" cy="60%" r="2" />
-            <circle cx="30%" cy="75%" r="1" />
-            <circle cx="75%" cy="65%" r="1.5" />
-            <circle cx="88%" cy="72%" r="2" />
-          </g>
-        </svg>
-      </div>
-
-      {/* Dot grid */}
-      <div
-        aria-hidden
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage: `radial-gradient(circle, rgba(78,205,196,0.1) 1px, transparent 1px)`,
-          backgroundSize: "44px 44px",
-          maskImage: "radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 80%)",
-          WebkitMaskImage: "radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 80%)",
-        }}
-      />
-
-      <div className="max-w-6xl w-full mx-auto relative">
-
-        {/* Header rule — gradient */}
+        {/* Header rule */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -109,90 +79,79 @@ export default function Hero() {
           className="flex items-center gap-4 mb-10"
         >
           <span className="font-mono text-[11px] tracking-[0.25em]"
-            style={{ background: "linear-gradient(90deg, #C8A84B, #4ECDC4)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+            style={{ background: "linear-gradient(90deg, #8A6B10, #D4AF37)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
             00 —
           </span>
           <span className="font-mono text-[11px] text-[--muted] tracking-[0.18em]">INTRODUCTION</span>
-          <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(200,168,75,0.3), transparent)" }} />
+          <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(184,146,26,0.4), transparent)" }} />
           <span className="font-mono text-[11px] text-[--muted] tracking-[0.18em]">BANGKOK · TH</span>
         </motion.div>
 
-        {/* Award badge — gradient border */}
+        {/* Availability + award badges */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="inline-flex items-center gap-2 px-3 py-1.5 mb-8"
-          style={{
-            background: "linear-gradient(var(--background), var(--background)) padding-box, linear-gradient(135deg, #C8A84B, #4ECDC4) border-box",
-            border: "1px solid transparent",
-          }}
+          className="flex flex-wrap items-center gap-4 mb-8"
         >
-          <span className="text-sm leading-none"
-            style={{ background: "linear-gradient(135deg, #C8A84B, #4ECDC4)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-            ✦
-          </span>
-          <span className="font-mono text-[11px] tracking-[0.15em]"
-            style={{ background: "linear-gradient(135deg, #C8A84B, #4ECDC4)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-            1ST PLACE · IFTH BE SYMPOSIUM 2025
-          </span>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5"
+            style={{ background: "rgba(16,185,129,0.07)", border: "1px solid rgba(16,185,129,0.28)" }}>
+            <span className="relative flex h-2 w-2 shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60" style={{ background: "#10B981" }} />
+              <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: "#10B981" }} />
+            </span>
+            <span className="font-mono text-[11px] tracking-[0.15em]" style={{ color: "#0D9E6A" }}>
+              OPEN TO WORK · AVAILABLE FOR FREELANCE
+            </span>
+          </div>
+          <div className="inline-flex items-center gap-1.5 opacity-55">
+            <span style={{ color: "#B8921A", fontSize: "11px" }}>✦</span>
+            <span className="font-mono text-[10px] tracking-[0.13em] text-[--muted]">1ST PLACE · IFTH 2025</span>
+          </div>
         </motion.div>
 
-        {/* Name */}
-        <div className="overflow-hidden mb-1">
-          <motion.h1
-            initial={{ y: "105%" }}
-            animate={{ y: 0 }}
-            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
-            className="font-display italic font-light text-[--foreground] leading-[0.86] tracking-tight"
-            style={{ fontSize: "clamp(68px, 11.5vw, 156px)" }}
-          >
-            Suriya
-          </motion.h1>
-        </div>
-        <div className="overflow-hidden">
-          <motion.h1
-            initial={{ y: "105%" }}
-            animate={{ y: 0 }}
-            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.22 }}
-            className="font-display italic font-light leading-[0.86] tracking-tight"
-            style={{
-              fontSize: "clamp(68px, 11.5vw, 156px)",
-              background: "linear-gradient(135deg, #F0EBD8 40%, #C8A84B 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}
-          >
-            Chaubey
-          </motion.h1>
-        </div>
+        {/* Name — Bodoni italic with shimmer on last name */}
+        <motion.h1
+          initial={{ y: 56, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+          className="font-display italic font-normal text-[--foreground] leading-[0.88] tracking-tight mb-1"
+          style={{ fontSize: "clamp(72px, 12vw, 164px)" }}
+        >
+          Suriya
+        </motion.h1>
+        <motion.h1
+          initial={{ y: 56, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.22 }}
+          className="shimmer-text font-display italic font-normal leading-[0.88] tracking-tight"
+          style={{ fontSize: "clamp(72px, 12vw, 164px)", paddingBottom: "0.2em", marginBottom: "-0.2em" }}
+        >
+          Chaubey
+        </motion.h1>
 
-        {/* Scanning gradient line */}
+        {/* Gold scan line */}
         <motion.div
           initial={{ scaleX: 0, originX: 0 }}
           animate={{ scaleX: 1 }}
-          transition={{ duration: 1.3, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
-          className="h-px my-7"
-          style={{
-            background: "linear-gradient(90deg, #C8A84B 0%, #4ECDC4 50%, #E8705E 100%)",
-            boxShadow: "0 0 16px rgba(200,168,75,0.35), 0 0 32px rgba(78,205,196,0.15)",
-          }}
+          transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
+          className="h-px my-8"
+          style={{ background: "linear-gradient(90deg, #8A6B10 0%, #D4AF37 40%, #F5E878 60%, #D4AF37 80%, transparent 100%)" }}
         />
 
         {/* Role / bio row */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, delay: 0.68 }}
+          transition={{ duration: 0.7, delay: 0.7 }}
           className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 mb-10"
         >
           <div>
             <p className="font-mono text-[10px] text-[--muted] tracking-[0.2em] mb-2">ROLE</p>
-            <p className="text-[--foreground] text-base leading-snug">
-              AI / ML Engineer · Data Engineer
+            <p className="text-[--foreground] text-base leading-snug font-mono tracking-wide">
+              {roleText}
               <br />
-              <span className="text-[--muted]">Bangkok, Thailand</span>
+              <span className="text-[--muted] font-sans font-normal tracking-normal">Bangkok, Thailand</span>
             </p>
           </div>
           <p className="text-[--muted] text-sm leading-relaxed max-w-sm sm:text-right">
@@ -205,25 +164,36 @@ export default function Hero() {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
+          transition={{ duration: 0.6, delay: 0.82 }}
           className="flex flex-wrap items-center gap-4 mb-16"
         >
           <a
             href="#projects"
-            className="font-mono text-[11px] tracking-[0.18em] px-6 py-3 text-[--background] hover:brightness-110 transition-all"
-            style={{ background: "linear-gradient(135deg, #C8A84B 0%, #E8A030 100%)" }}
+            className="font-mono text-[11px] tracking-[0.18em] px-6 py-3 hover:brightness-90 transition-all cursor-pointer"
+            style={{ background: "linear-gradient(135deg, #B8921A 0%, #D4AF37 100%)", color: "#0C0A09" }}
           >
             VIEW WORK
           </a>
           <a
             href="mailto:suriyachaubey@gmail.com"
-            className="font-mono text-[11px] tracking-[0.18em] px-6 py-3 text-[--muted] hover:text-[--accent-cyan] transition-all"
+            className="font-mono text-[11px] tracking-[0.18em] px-6 py-3 text-[--muted] hover:text-[--accent] transition-all cursor-pointer"
             style={{
-              background: "linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(135deg, rgba(78,205,196,0.3), rgba(200,168,75,0.3)) border-box",
+              background: "linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(135deg, rgba(184,146,26,0.4), rgba(212,175,55,0.4)) border-box",
               border: "1px solid transparent",
             }}
           >
             GET IN TOUCH
+          </a>
+          <a
+            href="/resume.pdf"
+            download
+            className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] px-6 py-3 text-[--muted] hover:text-[--foreground] transition-all cursor-pointer"
+            style={{
+              background: "linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(135deg, rgba(184,146,26,0.25), rgba(212,175,55,0.25)) border-box",
+              border: "1px solid transparent",
+            }}
+          >
+            ↓ DOWNLOAD CV
           </a>
         </motion.div>
 
@@ -235,17 +205,17 @@ export default function Hero() {
           className="flex items-center gap-6"
         >
           <a href="https://github.com/TopOfficial" target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-1.5 font-mono text-[11px] tracking-[0.18em] text-[--muted] hover:text-[--accent-cyan] transition-colors">
+            className="flex items-center gap-1.5 font-mono text-[11px] tracking-[0.18em] text-[--muted] hover:text-[--accent] transition-colors cursor-pointer">
             <GithubIcon size={13} /> GITHUB
           </a>
           <span className="text-[--muted-dim]">·</span>
           <a href="https://linkedin.com/in/suriya-chaubey" target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-1.5 font-mono text-[11px] tracking-[0.18em] text-[--muted] hover:text-[--accent] transition-colors">
+            className="flex items-center gap-1.5 font-mono text-[11px] tracking-[0.18em] text-[--muted] hover:text-[--accent] transition-colors cursor-pointer">
             <LinkedinIcon size={13} /> LINKEDIN
           </a>
           <span className="text-[--muted-dim]">·</span>
           <a href="mailto:suriyachaubey@gmail.com"
-            className="flex items-center gap-1.5 font-mono text-[11px] tracking-[0.18em] text-[--muted] hover:text-[--accent-coral] transition-colors">
+            className="flex items-center gap-1.5 font-mono text-[11px] tracking-[0.18em] text-[--muted] hover:text-[--accent] transition-colors cursor-pointer">
             <Mail size={13} /> EMAIL
           </a>
         </motion.div>

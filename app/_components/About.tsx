@@ -5,31 +5,59 @@ import { motion } from "framer-motion";
 const skillGroups = [
   {
     category: "AI / LLMs / NLP",
-    accentColor: "#4ECDC4",
-    items: ["LLM Fine-tuning", "RAG", "Prompt Engineering", "NLP Pipelines", "Text Classification", "Embeddings"],
+    accentColor: "#D4AF37",
+    skills: [
+      { name: "RAG Pipelines", pct: 92 },
+      { name: "Prompt Engineering", pct: 90 },
+      { name: "LLM Fine-tuning", pct: 86 },
+      { name: "Embeddings", pct: 86 },
+      { name: "NLP Pipelines", pct: 82 },
+      { name: "Text Classification", pct: 78 },
+    ],
   },
   {
-    category: "Data Engineering & Analysis",
-    accentColor: "#C8A84B",
-    items: ["SQL/NoSQL", "ETL Pipeline Design", "Data Preprocessing", "EDA", "Feature Engineering", "Power BI"],
+    category: "Data Engineering",
+    accentColor: "#B8921A",
+    skills: [
+      { name: "Data Preprocessing", pct: 90 },
+      { name: "SQL / NoSQL", pct: 88 },
+      { name: "ETL Pipeline Design", pct: 85 },
+      { name: "EDA", pct: 85 },
+      { name: "Feature Engineering", pct: 80 },
+      { name: "Power BI", pct: 78 },
+    ],
   },
   {
     category: "Machine Learning",
-    accentColor: "#E8705E",
-    items: ["PyTorch", "Scikit-learn", "Logistic Regression", "PCA", "CNN", "Backtesting"],
+    accentColor: "#9A7A10",
+    skills: [
+      { name: "Scikit-learn", pct: 86 },
+      { name: "Logistic Regression", pct: 88 },
+      { name: "PCA", pct: 82 },
+      { name: "PyTorch", pct: 78 },
+      { name: "CNN", pct: 74 },
+      { name: "Backtesting", pct: 80 },
+    ],
   },
   {
     category: "Engineering",
-    accentColor: "#4ECDC4",
-    items: ["Python", "REST APIs", "Docker", "Git", "Node.js", "React", "TypeScript", "FastAPI"],
+    accentColor: "#C9A030",
+    skills: [
+      { name: "Python", pct: 94 },
+      { name: "FastAPI", pct: 86 },
+      { name: "REST APIs", pct: 86 },
+      { name: "Docker", pct: 80 },
+      { name: "Git", pct: 88 },
+      { name: "TypeScript", pct: 72 },
+    ],
   },
 ];
 
 const stats = [
-  { label: "Internships", value: "2", color: "#C8A84B" },
-  { label: "Award", value: "IFTH 2025", color: "#E8705E" },
-  { label: "IELTS Score", value: "7.0", color: "#4ECDC4" },
-  { label: "Graduating", value: "Mar 2026", color: "#C8A84B" },
+  { label: "Internships", value: "2", color: "#D4AF37" },
+  { label: "Award", value: "IFTH 2025", color: "#B8921A" },
+  { label: "IELTS Score", value: "7.0", color: "#C9A030" },
+  { label: "Graduating", value: "Mar 2026", color: "#9A7A10" },
 ];
 
 export default function About() {
@@ -37,12 +65,18 @@ export default function About() {
     <section id="about" className="relative py-28 px-6 overflow-hidden"
       style={{ background: "linear-gradient(180deg, var(--surface) 0%, var(--background) 100%)" }}>
 
-      {/* Background orbs */}
+      {/* Floating gold orbs */}
       <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-10 right-0 w-[400px] h-[400px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(78,205,196,0.06) 0%, transparent 70%)", filter: "blur(60px)" }} />
-        <div className="absolute bottom-0 -left-20 w-[350px] h-[350px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(232,112,94,0.05) 0%, transparent 70%)", filter: "blur(60px)" }} />
+        <div className="orb-drift-a absolute w-[460px] h-[460px] rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(212,175,55,0.11) 0%, transparent 68%)", filter: "blur(55px)", top: "-5%", right: "-4%", animationDelay: "0s" }} />
+        <div className="orb-drift-b absolute w-[320px] h-[320px] rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(184,146,26,0.10) 0%, transparent 68%)", filter: "blur(50px)", top: "28%", left: "12%", animationDelay: "-4s" }} />
+        <div className="orb-drift-c absolute w-[220px] h-[220px] rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(154,122,16,0.09) 0%, transparent 68%)", filter: "blur(40px)", top: "55%", right: "22%", animationDelay: "-2s" }} />
+        <div className="orb-drift-a absolute w-[380px] h-[380px] rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(201,160,48,0.08) 0%, transparent 68%)", filter: "blur(60px)", bottom: "-8%", left: "-5%", animationDelay: "-6s" }} />
+        <div className="orb-drift-b absolute w-[260px] h-[260px] rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(212,175,55,0.07) 0%, transparent 68%)", filter: "blur(45px)", top: "15%", left: "48%", animationDelay: "-9s" }} />
       </div>
 
       {/* Background numeral */}
@@ -61,11 +95,11 @@ export default function About() {
         >
           <div className="flex items-center gap-4 mb-8">
             <span className="font-mono text-[11px] tracking-[0.25em]"
-              style={{ background: "linear-gradient(90deg, #4ECDC4, #C8A84B)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+              style={{ background: "linear-gradient(90deg, #8A6B10, #D4AF37)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
               03 —
             </span>
             <span className="font-mono text-[11px] text-[--muted] tracking-[0.18em]">ABOUT</span>
-            <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(78,205,196,0.3), transparent)" }} />
+            <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(184,146,26,0.25), transparent)" }} />
           </div>
         </motion.div>
 
@@ -81,21 +115,21 @@ export default function About() {
             <h2 className="font-display italic font-light leading-tight mb-8"
               style={{
                 fontSize: "clamp(30px, 4vw, 52px)",
-                background: "linear-gradient(135deg, #F0EBD8 60%, #C8A84B 100%)",
+                background: "linear-gradient(135deg, #0C0A09 60%, #B8921A 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
               }}>
               Builder by curiosity,{" "}
               <span style={{
-                background: "linear-gradient(135deg, #4ECDC4 0%, #E8705E 100%)",
+                background: "linear-gradient(135deg, #9A7A10 0%, #D4AF37 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
               }}>engineer by choice</span>
             </h2>
 
-            <div className="space-y-4 text-[--muted] leading-relaxed text-sm">
+            <div className="space-y-4 text-[--muted] leading-relaxed text-[15px] font-medium">
               <p>
                 I&apos;m a final-year Software Engineering student (Data &amp; AI Track) at
                 KMITL, Bangkok. I specialize in shipping LLM-based systems, RAG
@@ -117,11 +151,11 @@ export default function About() {
             {/* Education */}
             <div className="mt-8 p-5 relative"
               style={{
-                background: "linear-gradient(var(--surface-2), var(--surface-2)) padding-box, linear-gradient(135deg, #4ECDC4, #C8A84B) border-box",
+                background: "linear-gradient(var(--surface-2), var(--surface-2)) padding-box, linear-gradient(135deg, #8A6B10, #D4AF37) border-box",
                 border: "1px solid transparent",
               }}>
               <p className="font-mono text-[10px] tracking-[0.2em] mb-3"
-                style={{ background: "linear-gradient(90deg, #4ECDC4, #C8A84B)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                style={{ background: "linear-gradient(90deg, #8A6B10, #D4AF37)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
                 EDUCATION
               </p>
               <p className="text-sm font-medium text-[--foreground]">B.Eng. Software Engineering (Data &amp; AI Track)</p>
@@ -160,19 +194,26 @@ export default function About() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.08 }}
               >
-                <p className="font-mono text-[10px] tracking-[0.2em] mb-3"
+                <p className="font-mono text-[12px] font-medium tracking-[0.2em] mb-4"
                   style={{ color: group.accentColor }}>
                   {group.category.toUpperCase()}
                 </p>
-                <div className="flex flex-wrap gap-x-4 gap-y-2">
-                  {group.items.map((skill) => (
-                    <span key={skill}
-                      className="text-sm text-[--muted] pb-0.5 transition-colors cursor-default hover:text-[--foreground]"
-                      style={{ borderBottom: `1px solid ${group.accentColor}33` }}
-                      onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderBottomColor = group.accentColor}
-                      onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderBottomColor = group.accentColor + "33"}>
-                      {skill}
-                    </span>
+                <div className="flex flex-wrap gap-2">
+                  {group.skills.map((skill, si) => (
+                    <motion.span
+                      key={skill.name}
+                      initial={{ opacity: 0, y: 6 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.35, delay: i * 0.08 + si * 0.05 }}
+                      className="text-[13px] font-semibold px-3 py-1.5 tracking-wide"
+                      style={{
+                        color: group.accentColor,
+                        border: `1px solid ${group.accentColor}40`,
+                        background: `${group.accentColor}10`,
+                      }}>
+                      {skill.name}
+                    </motion.span>
                   ))}
                 </div>
               </motion.div>
