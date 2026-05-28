@@ -99,6 +99,54 @@ const projects = [
     demo: null,
     badge: null,
   },
+  {
+    title: "Markov Scanner",
+    description:
+      "Automated daily stock scanner covering ~566 tickers (S&P 500, NASDAQ-100, SET50) using the Markov Method — a probabilistic model computing bull/bear transition probabilities from daily closes. Ranks buy candidates by a composite quant score and sends a full report to LINE every weekday at 4:05 PM.",
+    highlights: [
+      "Markov transition matrix: Bull tmr, Bear tmr, Stickiness, Net Edge computed per ticker",
+      "Composite buy score: 50% Net Edge + 30% 5-day momentum + 20% volume ratio",
+      "Portfolio tracking via LINE commands (/add, /remove, /report) over Flask webhook + ngrok",
+      "Sell alerts: Markov turns bearish OR 5% stop-loss hit",
+    ],
+    tags: ["Python", "yfinance", "NumPy", "Flask", "LINE API"],
+    type: "Personal Project",
+    github: null,
+    demo: null,
+    badge: null,
+  },
+  {
+    title: "Market Briefing",
+    description:
+      "Automated daily market briefing delivered every morning via LINE. Pulls live prices for major US equities, gold, DXY, and crypto, fetches top financial news, then calls the Claude API to generate a structured analysis — macro outlook, sector moves, crypto summary, and key risks.",
+    highlights: [
+      "Covers SPY, NVDA, AAPL, MSFT, META, GOOGL, AMZN, gold, DXY, BTC/ETH/SOL",
+      "Claude API generates full structured briefing with macro, sector, and crypto sections",
+      "Extracts condensed LINE-ready summary (<1000 chars) from full report",
+      "Runs on cron at 10 AM Bangkok time via NewsAPI + CoinGecko + yfinance",
+    ],
+    tags: ["Python", "Claude API", "yfinance", "CoinGecko", "LINE API"],
+    type: "Personal Project",
+    github: null,
+    demo: null,
+    badge: null,
+  },
+  {
+    title: "CompeteWatch",
+    description:
+      "Full-stack competitor intelligence platform. Users create projects, add competitors, and the system scrapes their websites, GitHub repos, Hacker News mentions, and Product Hunt listings on a schedule. Claude generates AI-written digests summarising what changed — new features, GitHub activity, community buzz.",
+    highlights: [
+      "Scrapers: website (BeautifulSoup4), GitHub API, Hacker News, Product Hunt",
+      "Claude API generates structured change digests per competitor on a schedule",
+      "JWT-based auth, PDF file uploads, stats dashboard",
+      "FastAPI backend + React SPA frontend",
+    ],
+    tags: ["Python", "FastAPI", "Claude API", "BeautifulSoup4", "SQLite"],
+    type: "Personal Project",
+    github: null,
+    demo: null,
+    badge: null,
+  },
 ];
 
 function OrnamentalCorner({ color }: { color: string }) {
