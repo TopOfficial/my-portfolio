@@ -340,7 +340,7 @@ export default function Projects() {
           </div>
           <h2 className="font-display italic font-light text-[--foreground] leading-tight mb-4"
             style={{ fontSize: "clamp(36px, 5vw, 60px)" }}>
-            Things I&apos;ve built
+            Selected Projects
           </h2>
           <p className="text-[--muted] max-w-lg text-sm leading-relaxed">
             LLM systems, data pipelines, and intelligent automation — built for
@@ -351,10 +351,13 @@ export default function Projects() {
         {/* Featured project — full width */}
         <ProjectCard key={projects[0].title} project={projects[0]} index={0} featured />
 
-        {/* Remaining projects — 2-column grid */}
-        <div className="grid sm:grid-cols-2 gap-4 mt-4">
+        {/* Remaining projects — horizontal scroll */}
+        <div className="flex gap-4 mt-4 overflow-x-auto pb-4 -mx-6 px-6"
+          style={{ scrollSnapType: "x mandatory", scrollbarWidth: "thin", scrollbarColor: "rgba(212,175,55,0.3) transparent" }}>
           {projects.slice(1).map((project, i) => (
-            <ProjectCard key={project.title} project={project} index={i + 1} />
+            <div key={project.title} className="shrink-0 w-80" style={{ scrollSnapAlign: "start" }}>
+              <ProjectCard project={project} index={i + 1} />
+            </div>
           ))}
         </div>
 
