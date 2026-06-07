@@ -301,7 +301,7 @@ function ProjectCard({
         <ul className="space-y-1.5">
           {project.highlights.map((h) => (
             <li key={h} className="flex items-start gap-2.5 text-sm text-[--muted]">
-              <span className="mt-[7px] w-1 h-1 shrink-0" style={{ background: accent.color }} />
+              <span className="mt-1.75 w-1 h-1 shrink-0" style={{ background: accent.color }} />
               {h}
             </li>
           ))}
