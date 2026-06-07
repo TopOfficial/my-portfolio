@@ -20,6 +20,22 @@ const cardAccents = [
 
 const projects = [
   {
+    title: "PRISM",
+    description:
+      "Stock investment brief web app. Enter any US ticker and get a full data snapshot — valuation, financials, earnings history, recent news, and a rule-based verdict — in seconds.",
+    highlights: [
+      "Price & range, P/E, P/B, P/S, EV/EBITDA vs sector P/E",
+      "Earnings history: last 4 quarters with EPS estimate vs actual and beat/miss",
+      "Rule-based verdict: UNDERVALUED / FAIR VALUE / OVERVALUED with bull and bear case",
+      "FastAPI backend + React/Vite frontend, deployed on Render + Vercel",
+    ],
+    tags: ["Python", "FastAPI", "React", "yfinance", "Tailwind CSS"],
+    type: "Personal Project",
+    github: "https://github.com/TopOfficial/prism",
+    demo: null,
+    badge: null,
+  },
+  {
     title: "Wafer Log Sentiment Analysis",
     description:
       "End-to-end LLM + RAG pipeline for automated semiconductor wafer log analysis. Ingests unstructured test logs, embeds into a vector store, retrieves fault history, and generates actionable engineering recommendations via LLM.",
@@ -335,12 +351,12 @@ export default function Projects() {
               style={{ background: "linear-gradient(90deg, #8A6B10, #D4AF37)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
               01 —
             </span>
-            <span className="font-mono text-[11px] text-[--muted] tracking-[0.18em]">SELECTED WORK</span>
+            <span className="font-mono text-[11px] text-[--muted] tracking-[0.18em]">PROJECTS</span>
             <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(200,168,75,0.3), transparent)" }} />
           </div>
           <h2 className="font-display italic font-light text-[--foreground] leading-tight mb-4"
             style={{ fontSize: "clamp(36px, 5vw, 60px)" }}>
-            Selected Projects
+            Projects
           </h2>
           <p className="text-[--muted] max-w-lg text-sm leading-relaxed">
             LLM systems, data pipelines, and intelligent automation — built for
@@ -348,15 +364,12 @@ export default function Projects() {
           </p>
         </motion.div>
 
-        {/* Featured project — full width */}
-        <ProjectCard key={projects[0].title} project={projects[0]} index={0} featured />
-
-        {/* Remaining projects — horizontal scroll */}
-        <div className="flex gap-4 mt-4 overflow-x-auto pb-4 -mx-6 px-6"
+        {/* All projects — uniform horizontal scroll */}
+        <div className="flex gap-4 overflow-x-auto pb-4 -mx-6 px-6"
           style={{ scrollSnapType: "x mandatory", scrollbarWidth: "thin", scrollbarColor: "rgba(212,175,55,0.3) transparent" }}>
-          {projects.slice(1).map((project, i) => (
+          {projects.map((project, i) => (
             <div key={project.title} className="shrink-0 w-80" style={{ scrollSnapAlign: "start" }}>
-              <ProjectCard project={project} index={i + 1} />
+              <ProjectCard project={project} index={i} />
             </div>
           ))}
         </div>
