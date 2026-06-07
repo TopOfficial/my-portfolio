@@ -36,19 +36,46 @@ const skillGroups = [
       { name: "PCA", pct: 82 },
       { name: "PyTorch", pct: 78 },
       { name: "CNN", pct: 74 },
+      { name: "Computer Vision", pct: 74 },
       { name: "Backtesting", pct: 80 },
     ],
   },
   {
-    category: "Engineering",
+    category: "Languages & Frameworks",
     accentColor: "#C9A030",
     skills: [
       { name: "Python", pct: 94 },
+      { name: "Java", pct: 82 },
+      { name: "JavaScript", pct: 84 },
+      { name: "TypeScript", pct: 72 },
+      { name: "C", pct: 76 },
+      { name: "C++", pct: 74 },
+      { name: "React", pct: 78 },
+      { name: "Node.js", pct: 76 },
       { name: "FastAPI", pct: 86 },
+    ],
+  },
+  {
+    category: "Dev & Tooling",
+    accentColor: "#D4AF37",
+    skills: [
       { name: "REST APIs", pct: 86 },
       { name: "Docker", pct: 80 },
       { name: "Git", pct: 88 },
-      { name: "TypeScript", pct: 72 },
+      { name: "CI/CD", pct: 75 },
+      { name: "Linux / Bash", pct: 78 },
+      { name: "System Design", pct: 80 },
+    ],
+  },
+  {
+    category: "Software Process",
+    accentColor: "#B8921A",
+    skills: [
+      { name: "Agile / Scrum", pct: 85 },
+      { name: "OOP & Design Patterns", pct: 84 },
+      { name: "Unit & Integration Testing", pct: 80 },
+      { name: "Requirements Analysis", pct: 78 },
+      { name: "Code Review", pct: 82 },
     ],
   },
 ];
@@ -57,7 +84,7 @@ const stats = [
   { label: "Internships", value: "2", color: "#D4AF37" },
   { label: "Award", value: "IFTH 2025", color: "#B8921A" },
   { label: "IELTS Score", value: "7.0", color: "#C9A030" },
-  { label: "Graduating", value: "Mar 2026", color: "#9A7A10" },
+  { label: "Graduated", value: "Apr 2026", color: "#9A7A10" },
 ];
 
 export default function About() {
@@ -67,15 +94,15 @@ export default function About() {
 
       {/* Floating gold orbs */}
       <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="orb-drift-a absolute w-[460px] h-[460px] rounded-full"
+        <div className="orb-drift-a absolute w-115 h-115 rounded-full"
           style={{ background: "radial-gradient(circle, rgba(212,175,55,0.11) 0%, transparent 68%)", filter: "blur(55px)", top: "-5%", right: "-4%", animationDelay: "0s" }} />
-        <div className="orb-drift-b absolute w-[320px] h-[320px] rounded-full"
+        <div className="orb-drift-b absolute w-[320px] h-80 rounded-full"
           style={{ background: "radial-gradient(circle, rgba(184,146,26,0.10) 0%, transparent 68%)", filter: "blur(50px)", top: "28%", left: "12%", animationDelay: "-4s" }} />
-        <div className="orb-drift-c absolute w-[220px] h-[220px] rounded-full"
+        <div className="orb-drift-c absolute w-55 h-55 rounded-full"
           style={{ background: "radial-gradient(circle, rgba(154,122,16,0.09) 0%, transparent 68%)", filter: "blur(40px)", top: "55%", right: "22%", animationDelay: "-2s" }} />
-        <div className="orb-drift-a absolute w-[380px] h-[380px] rounded-full"
+        <div className="orb-drift-a absolute w-95 h-95 rounded-full"
           style={{ background: "radial-gradient(circle, rgba(201,160,48,0.08) 0%, transparent 68%)", filter: "blur(60px)", bottom: "-8%", left: "-5%", animationDelay: "-6s" }} />
-        <div className="orb-drift-b absolute w-[260px] h-[260px] rounded-full"
+        <div className="orb-drift-b absolute w-65 h-65 rounded-full"
           style={{ background: "radial-gradient(circle, rgba(212,175,55,0.07) 0%, transparent 68%)", filter: "blur(45px)", top: "15%", left: "48%", animationDelay: "-9s" }} />
       </div>
 

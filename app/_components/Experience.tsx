@@ -60,7 +60,7 @@ export default function Experience() {
           </div>
           <h2 className="font-display italic font-light text-[--foreground] leading-tight"
             style={{ fontSize: "clamp(36px, 5vw, 60px)" }}>
-            Where I&apos;ve worked
+            Work Experiences
           </h2>
         </motion.div>
 
@@ -80,7 +80,7 @@ export default function Experience() {
                 className="sm:pl-10 relative"
               >
                 {/* Glowing dot */}
-                <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 hidden sm:block"
+                <div className="absolute -left-1.25 top-1.5 w-2.5 h-2.5 hidden sm:block"
                   style={{
                     background: job.accentColor,
                     boxShadow: `0 0 10px ${job.glowColor}, 0 0 20px ${job.glowColor}`,

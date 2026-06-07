@@ -190,7 +190,7 @@ function ProjectCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: index * 0.08 }}
-      className={`group relative flex flex-col gap-4 p-6 transition-all duration-300 ${featured ? "sm:flex-row sm:gap-10 sm:p-8" : ""}`}
+      className={`group relative flex flex-col gap-4 p-6 transition-all duration-300 h-full ${featured ? "sm:flex-row sm:gap-10 sm:p-8" : ""}`}
       style={{
         background: featured
           ? `linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 60%, rgba(200,168,75,0.06) 100%)`
@@ -365,10 +365,10 @@ export default function Projects() {
         </motion.div>
 
         {/* All projects — uniform horizontal scroll */}
-        <div className="flex gap-4 overflow-x-auto pb-4 -mx-6 px-6"
+        <div className="flex items-stretch gap-4 overflow-x-auto pb-4 -mx-6 px-6"
           style={{ scrollSnapType: "x mandatory", scrollbarWidth: "thin", scrollbarColor: "rgba(212,175,55,0.3) transparent" }}>
           {projects.map((project, i) => (
-            <div key={project.title} className="shrink-0 w-80" style={{ scrollSnapAlign: "start" }}>
+            <div key={project.title} className="shrink-0 w-80 h-full" style={{ scrollSnapAlign: "start" }}>
               <ProjectCard project={project} index={i} />
             </div>
           ))}
