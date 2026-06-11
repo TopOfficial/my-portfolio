@@ -24,9 +24,9 @@ export default function Nav() {
         scrolled ? "border-b border-[--border]" : "bg-transparent"
       }`}
       style={scrolled ? {
-        background: "rgba(250, 250, 248, 0.94)",
+        background: "rgba(11, 9, 8, 0.85)",
         backdropFilter: "blur(16px)",
-        boxShadow: "0 1px 0 rgba(184,146,26,0.12)",
+        boxShadow: "0 1px 0 rgba(212,175,55,0.15)",
       } : undefined}
     >
       <nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -34,7 +34,7 @@ export default function Nav() {
           <span
             className="font-mono text-xs font-medium tracking-[0.2em]"
             style={{
-              background: "linear-gradient(135deg, #8A6B10, #D4AF37)",
+              background: "linear-gradient(135deg, #B8921A, #F0D060)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
@@ -82,7 +82,7 @@ export default function Nav() {
               onMouseEnter={e => {
                 (e.currentTarget as HTMLElement).style.backgroundImage =
                   "linear-gradient(135deg, #B8921A, #D4AF37), linear-gradient(135deg, #B8921A, #D4AF37)";
-                (e.currentTarget as HTMLElement).style.webkitTextFillColor = "#0C0A09";
+                (e.currentTarget as HTMLElement).style.webkitTextFillColor = "#0B0908";
               }}
               onMouseLeave={e => {
                 (e.currentTarget as HTMLElement).style.backgroundImage =

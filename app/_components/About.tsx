@@ -142,14 +142,14 @@ export default function About() {
             <h2 className="font-display italic font-light leading-tight mb-8"
               style={{
                 fontSize: "clamp(30px, 4vw, 52px)",
-                background: "linear-gradient(135deg, #0C0A09 60%, #B8921A 100%)",
+                background: "linear-gradient(135deg, #F4EFE6 60%, #D4AF37 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
               }}>
               Builder by curiosity,{" "}
               <span style={{
-                background: "linear-gradient(135deg, #9A7A10 0%, #D4AF37 100%)",
+                background: "linear-gradient(135deg, #D4AF37 0%, #F0D060 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -158,20 +158,20 @@ export default function About() {
 
             <div className="space-y-4 text-[--muted] leading-relaxed text-[15px] font-medium">
               <p>
-                I&apos;m a final-year Software Engineering student (Data &amp; AI Track) at
-                KMITL, Bangkok. I specialize in shipping LLM-based systems, RAG
-                architectures, and data pipelines that go beyond prototypes into production.
+                I&apos;m a Software Engineering graduate from KMITL (Data &amp; AI Track),
+                based in Bangkok. Most of my work is in LLM systems, RAG pipelines, and
+                data engineering.
               </p>
               <p>
-                At Infineon Technologies, I built a full RAG pipeline over semiconductor
-                test logs that won 1st place at the IFTH BE Symposium 2025. Before that, I
-                built fraud detection models at IBotnoi and automated swing-trading systems
-                in my own time.
+                During my internship at Infineon Technologies I built a RAG pipeline for
+                analyzing semiconductor test logs. It took 1st place at the IFTH BE
+                Symposium 2025. Before that I worked on fraud detection models at IBotnoi,
+                and on my own time I build trading bots and AI agents.
               </p>
               <p>
-                I care equally about the model and the system around it — retrieval
-                precision, API design, ETL reliability, and the business insight buried in
-                the data. IELTS 7.0, fluent in Thai, English, and conversational Hindi.
+                I like working on the whole system, not just the model: retrieval quality,
+                API design, and pipelines that hold up in production. IELTS 7.0. Fluent in
+                Thai and English, conversational Hindi.
               </p>
             </div>
 
@@ -187,7 +187,7 @@ export default function About() {
               </p>
               <p className="text-sm font-medium text-[--foreground]">B.Eng. Software Engineering (Data &amp; AI Track)</p>
               <p className="text-sm text-[--muted] mt-0.5">King Mongkut&apos;s Institute of Technology Ladkrabang</p>
-              <p className="font-mono text-[10px] text-[--muted] tracking-wider mt-2">BANGKOK, THAILAND · GRADUATED MAR 2026</p>
+              <p className="font-mono text-[10px] text-[--muted] tracking-wider mt-2">BANGKOK, THAILAND · GRADUATED APR 2026</p>
             </div>
 
             {/* Stats */}

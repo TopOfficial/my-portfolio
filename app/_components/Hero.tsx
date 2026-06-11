@@ -1,8 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, type Variants } from "framer-motion";
 import { Mail } from "lucide-react";
-import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import { useEffect, useRef, useState } from "react";
+
+const HeroScene = dynamic(() => import("./HeroScene"), { ssr: false });
 
 function GithubIcon({ size = 13 }: { size?: number }) {
   return (
@@ -26,13 +29,13 @@ function useScramble(text: string, delayMs: number = 0) {
   const [display, setDisplay] = useState(text);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setDisplay(text);
-      return;
-    }
-    setDisplay(
-      text.split("").map(c => c === " " ? " " : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]).join("")
-    );
+    // display already initialized to the final text — nothing to do for reduced motion
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const raf = requestAnimationFrame(() => {
+      setDisplay(
+        text.split("").map(c => c === " " ? " " : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]).join("")
+      );
+    });
     const timeout = setTimeout(() => {
       let frame = 0;
       const totalFrames = 22;
@@ -49,11 +52,51 @@ function useScramble(text: string, delayMs: number = 0) {
       }, 38);
       return () => clearInterval(interval);
     }, delayMs);
-    return () => clearTimeout(timeout);
+    return () => { cancelAnimationFrame(raf); clearTimeout(timeout); };
   }, []); // eslint-disable-line
 
   return display;
 }
+
+/* Magnetic hover — element eases toward the cursor, springs back on leave */
+function Magnetic({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const sx = useSpring(x, { stiffness: 220, damping: 18 });
+  const sy = useSpring(y, { stiffness: 220, damping: 18 });
+
+  return (
+    <motion.div
+      ref={ref}
+      style={{ x: sx, y: sy, display: "inline-block" }}
+      onMouseMove={e => {
+        const r = ref.current?.getBoundingClientRect();
+        if (!r) return;
+        x.set((e.clientX - (r.left + r.width / 2)) * 0.22);
+        y.set((e.clientY - (r.top + r.height / 2)) * 0.32);
+      }}
+      onMouseLeave={() => { x.set(0); y.set(0); }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+const stagger: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
+};
+
+const rise: Variants = {
+  hidden: { opacity: 0, y: 28 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } },
+};
+
+const nameRise: Variants = {
+  hidden: { opacity: 0, y: 64 },
+  show: { opacity: 1, y: 0, transition: { duration: 1.1, ease: [0.22, 1, 0.36, 1] } },
+};
 
 export default function Hero() {
   const roleText = useScramble("AI / ML Engineer · Data Engineer", 1100);
@@ -61,69 +104,64 @@ export default function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col justify-center px-6 pt-16 overflow-hidden">
 
+      {/* 3D neural particle field */}
+      <HeroScene />
+
       {/* Gold atmospheric glows */}
       <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(212,175,55,0.10) 0%, transparent 65%)", filter: "blur(60px)" }} />
+          style={{ background: "radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 65%)", filter: "blur(60px)" }} />
         <div className="absolute bottom-0 -left-20 w-[500px] h-[500px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(184,146,26,0.08) 0%, transparent 65%)", filter: "blur(70px)" }} />
+          style={{ background: "radial-gradient(circle, rgba(184,146,26,0.06) 0%, transparent 65%)", filter: "blur(70px)" }} />
       </div>
 
-      <div className="max-w-6xl w-full mx-auto relative" style={{ zIndex: 1 }}>
+      <motion.div
+        variants={stagger}
+        initial="hidden"
+        animate="show"
+        className="max-w-6xl w-full mx-auto relative"
+        style={{ zIndex: 1 }}
+      >
 
         {/* Header rule */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="flex items-center gap-4 mb-10"
-        >
+        <motion.div variants={rise} className="flex items-center gap-4 mb-10">
           <span className="font-mono text-[11px] tracking-[0.25em]"
-            style={{ background: "linear-gradient(90deg, #8A6B10, #D4AF37)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+            style={{ background: "linear-gradient(90deg, #B8921A, #F0D060)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
             00 —
           </span>
           <span className="font-mono text-[11px] text-[--muted] tracking-[0.18em]">INTRODUCTION</span>
-          <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(184,146,26,0.4), transparent)" }} />
+          <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(212,175,55,0.4), transparent)" }} />
           <span className="font-mono text-[11px] text-[--muted] tracking-[0.18em]">BANGKOK · TH</span>
         </motion.div>
 
         {/* Availability + award badges */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="flex flex-wrap items-center gap-4 mb-8"
-        >
+        <motion.div variants={rise} className="flex flex-wrap items-center gap-4 mb-8">
           <div className="inline-flex items-center gap-2 px-3 py-1.5"
-            style={{ background: "rgba(16,185,129,0.07)", border: "1px solid rgba(16,185,129,0.28)" }}>
+            style={{ background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.30)" }}>
             <span className="relative flex h-2 w-2 shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60" style={{ background: "#10B981" }} />
               <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: "#10B981" }} />
             </span>
-            <span className="font-mono text-[11px] tracking-[0.15em]" style={{ color: "#0D9E6A" }}>
+            <span className="font-mono text-[11px] tracking-[0.15em]" style={{ color: "#34D399" }}>
               OPEN TO WORK · AVAILABLE FOR FREELANCE
             </span>
           </div>
-          <div className="inline-flex items-center gap-1.5 opacity-55">
-            <span style={{ color: "#B8921A", fontSize: "11px" }}>✦</span>
+          <div className="inline-flex items-center gap-1.5 opacity-70">
+            <span style={{ color: "#D4AF37", fontSize: "11px" }}>✦</span>
             <span className="font-mono text-[10px] tracking-[0.13em] text-[--muted]">1ST PLACE · IFTH 2025</span>
           </div>
         </motion.div>
 
         {/* Name — Bodoni italic with shimmer on last name */}
         <motion.h1
-          initial={{ y: 56, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+          variants={nameRise}
           className="font-display italic font-normal text-[--foreground] leading-[0.88] tracking-tight mb-1"
           style={{ fontSize: "clamp(72px, 12vw, 164px)" }}
         >
           Suriya
         </motion.h1>
         <motion.h1
-          initial={{ y: 56, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.22 }}
+          variants={nameRise}
           className="shimmer-text font-display italic font-normal leading-[0.88] tracking-tight"
           style={{ fontSize: "clamp(72px, 12vw, 164px)", paddingBottom: "0.2em", marginBottom: "-0.2em" }}
         >
@@ -132,20 +170,16 @@ export default function Hero() {
 
         {/* Gold scan line */}
         <motion.div
-          initial={{ scaleX: 0, originX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
+          variants={{
+            hidden: { scaleX: 0, originX: 0 },
+            show: { scaleX: 1, transition: { duration: 1.4, ease: [0.22, 1, 0.36, 1] } },
+          }}
           className="h-px my-8"
-          style={{ background: "linear-gradient(90deg, #8A6B10 0%, #D4AF37 40%, #F5E878 60%, #D4AF37 80%, transparent 100%)" }}
+          style={{ background: "linear-gradient(90deg, #8A6B10 0%, #D4AF37 40%, #FFF3B0 60%, #D4AF37 80%, transparent 100%)" }}
         />
 
         {/* Role / bio row */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, delay: 0.7 }}
-          className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 mb-10"
-        >
+        <motion.div variants={rise} className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 mb-10">
           <div>
             <p className="font-mono text-[10px] text-[--muted] tracking-[0.2em] mb-2">ROLE</p>
             <p className="text-[--foreground] text-base leading-snug font-mono tracking-wide">
@@ -161,49 +195,49 @@ export default function Hero() {
         </motion.div>
 
         {/* CTAs */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.82 }}
-          className="flex flex-wrap items-center gap-4 mb-16"
-        >
-          <a
-            href="#projects"
-            className="font-mono text-[11px] tracking-[0.18em] px-6 py-3 hover:brightness-90 transition-all cursor-pointer"
-            style={{ background: "linear-gradient(135deg, #B8921A 0%, #D4AF37 100%)", color: "#0C0A09" }}
-          >
-            VIEW WORK
-          </a>
-          <a
-            href="mailto:suriyachaubey@gmail.com"
-            className="font-mono text-[11px] tracking-[0.18em] px-6 py-3 text-[--muted] hover:text-[--accent] transition-all cursor-pointer"
-            style={{
-              background: "linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(135deg, rgba(184,146,26,0.4), rgba(212,175,55,0.4)) border-box",
-              border: "1px solid transparent",
-            }}
-          >
-            GET IN TOUCH
-          </a>
-          <a
-            href="/resume.pdf"
-            download
-            className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] px-6 py-3 text-[--muted] hover:text-[--foreground] transition-all cursor-pointer"
-            style={{
-              background: "linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(135deg, rgba(184,146,26,0.25), rgba(212,175,55,0.25)) border-box",
-              border: "1px solid transparent",
-            }}
-          >
-            ↓ DOWNLOAD CV
-          </a>
+        <motion.div variants={rise} className="flex flex-wrap items-center gap-4 mb-16">
+          <Magnetic>
+            <a
+              href="#projects"
+              className="inline-block font-mono text-[11px] tracking-[0.18em] px-6 py-3 hover:brightness-110 transition-all cursor-pointer"
+              style={{
+                background: "linear-gradient(135deg, #B8921A 0%, #D4AF37 100%)",
+                color: "#0B0908",
+                boxShadow: "0 0 24px rgba(212,175,55,0.25)",
+              }}
+            >
+              VIEW WORK
+            </a>
+          </Magnetic>
+          <Magnetic>
+            <a
+              href="mailto:suriyachaubey@gmail.com"
+              className="inline-block font-mono text-[11px] tracking-[0.18em] px-6 py-3 text-[--muted] hover:text-[--accent] transition-all cursor-pointer"
+              style={{
+                background: "linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(135deg, rgba(212,175,55,0.5), rgba(212,175,55,0.2)) border-box",
+                border: "1px solid transparent",
+              }}
+            >
+              GET IN TOUCH
+            </a>
+          </Magnetic>
+          <Magnetic>
+            <a
+              href="/resume.pdf"
+              download
+              className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] px-6 py-3 text-[--muted] hover:text-[--foreground] transition-all cursor-pointer"
+              style={{
+                background: "linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(135deg, rgba(212,175,55,0.3), rgba(212,175,55,0.12)) border-box",
+                border: "1px solid transparent",
+              }}
+            >
+              ↓ DOWNLOAD CV
+            </a>
+          </Magnetic>
         </motion.div>
 
         {/* Social links */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.95 }}
-          className="flex items-center gap-6"
-        >
+        <motion.div variants={rise} className="flex items-center gap-6">
           <a href="https://github.com/TopOfficial" target="_blank" rel="noopener noreferrer"
             className="flex items-center gap-1.5 font-mono text-[11px] tracking-[0.18em] text-[--muted] hover:text-[--accent] transition-colors cursor-pointer">
             <GithubIcon size={13} /> GITHUB
@@ -220,7 +254,24 @@ export default function Hero() {
           </a>
         </motion.div>
 
-      </div>
+        {/* Scroll cue */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2, duration: 1 }}
+          aria-hidden
+          className="absolute -bottom-14 left-1/2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-2"
+        >
+          <span className="font-mono text-[9px] tracking-[0.3em] text-[--muted-dim]">SCROLL</span>
+          <motion.span
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+            className="block w-px h-8"
+            style={{ background: "linear-gradient(to bottom, #D4AF37, transparent)" }}
+          />
+        </motion.div>
+
+      </motion.div>
     </section>
   );
 }

@@ -1,7 +1,14 @@
 "use client";
 
-import { motion } from "framer-motion";
+import {
+  motion,
+  useMotionTemplate,
+  useMotionValue,
+  useSpring,
+  useTransform,
+} from "framer-motion";
 import { ExternalLink } from "lucide-react";
+import { useRef } from "react";
 
 function GithubIcon({ size = 15 }: { size?: number }) {
   return (
@@ -12,13 +19,41 @@ function GithubIcon({ size = 15 }: { size?: number }) {
 }
 
 const cardAccents = [
-  { color: "#D4AF37", glow: "rgba(212,175,55,0.25)", border: "rgba(212,175,55,0.25)" },
-  { color: "#B8921A", glow: "rgba(184,146,26,0.25)", border: "rgba(184,146,26,0.25)" },
-  { color: "#C9A030", glow: "rgba(201,160,48,0.25)", border: "rgba(201,160,48,0.25)" },
-  { color: "#9A7A10", glow: "rgba(154,122,16,0.25)", border: "rgba(154,122,16,0.25)" },
+  { color: "#D4AF37", border: "rgba(212,175,55,0.35)" },
+  { color: "#F0D060", border: "rgba(240,208,96,0.30)" },
+  { color: "#C9A030", border: "rgba(201,160,48,0.35)" },
+  { color: "#B8921A", border: "rgba(184,146,26,0.35)" },
 ];
 
-const projects = [
+type Project = {
+  title: string;
+  description: string;
+  highlights: string[];
+  tags: string[];
+  type: string;
+  github: string | null;
+  demo: string | null;
+  badge: string | null;
+};
+
+const featuredProject: Project = {
+  title: "Solarr",
+  description:
+    "Multi-agent AI consulting pipeline for SMEs. Upload a client's financials and interview notes, and a 5-phase agent pipeline — six parallel specialists, an adversarial debate over every finding, then strategy synthesis — produces a bilingual English/Thai consulting report.",
+  highlights: [
+    "5-phase pipeline: ingestion → 6 specialists (finance, ops, market, tech, risk, analytics) → debate → strategy → report",
+    "Adversarial validation: advocate vs challenger agents argue each finding before a judge scores it",
+    "Recommendations ranked by impact × feasibility, full report translated EN → TH",
+    "FastAPI + Claude Sonnet with live phase, cost, and progress tracking in the browser",
+  ],
+  tags: ["Python", "Multi-Agent", "Claude API", "FastAPI", "Pandas"],
+  type: "Freelance Product",
+  github: null,
+  demo: null,
+  badge: "Latest",
+};
+
+const projects: Project[] = [
   {
     title: "PRISM",
     description:
@@ -165,98 +200,170 @@ const projects = [
   },
 ];
 
-function OrnamentalCorner({ color }: { color: string }) {
+/* 3D tilt — card rotates toward the cursor with a moving glare highlight */
+function Tilt({ children, max = 6 }: { children: React.ReactNode; max?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const px = useMotionValue(0.5);
+  const py = useMotionValue(0.5);
+  const rotateX = useSpring(useTransform(py, [0, 1], [max, -max]), { stiffness: 260, damping: 22 });
+  const rotateY = useSpring(useTransform(px, [0, 1], [-max, max]), { stiffness: 260, damping: 22 });
+  const glareX = useTransform(px, [0, 1], ["20%", "80%"]);
+  const glareY = useTransform(py, [0, 1], ["20%", "80%"]);
+  const glare = useMotionTemplate`radial-gradient(circle at ${glareX} ${glareY}, rgba(244,228,160,0.07) 0%, transparent 55%)`;
+
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-      <path d="M0,16 L0,0 L16,0" stroke={color} strokeWidth="1.2" opacity="0.5" />
-    </svg>
+    <div style={{ perspective: 900 }} className="h-full">
+      <motion.div
+        ref={ref}
+        className="relative h-full"
+        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+        onMouseMove={e => {
+          const r = ref.current?.getBoundingClientRect();
+          if (!r) return;
+          px.set((e.clientX - r.left) / r.width);
+          py.set((e.clientY - r.top) / r.height);
+        }}
+        onMouseLeave={() => { px.set(0.5); py.set(0.5); }}
+      >
+        {children}
+        <motion.div aria-hidden className="absolute inset-0 pointer-events-none" style={{ background: glare }} />
+      </motion.div>
+    </div>
   );
 }
 
-function ProjectCard({
-  project,
-  index,
-  featured = false,
-}: {
-  project: (typeof projects)[number];
-  index: number;
-  featured?: boolean;
-}) {
+function Links({ project, accent }: { project: Project; accent: string }) {
+  return (
+    <div className="flex gap-1 shrink-0">
+      {project.github && (
+        <a href={project.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub"
+          className="p-1.5 text-[--muted] transition-colors"
+          onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = accent}
+          onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "var(--muted)"}>
+          <GithubIcon size={15} />
+        </a>
+      )}
+      {project.demo && (
+        <a href={project.demo} target="_blank" rel="noopener noreferrer" aria-label="Live demo"
+          className="p-1.5 text-[--muted] hover:text-[--accent] transition-colors">
+          <ExternalLink size={15} />
+        </a>
+      )}
+    </div>
+  );
+}
+
+function Tags({ tags }: { tags: string[] }) {
+  const tagColors = ["#D4AF37", "#A89D8A", "#F0D060"];
+  return (
+    <div className="flex flex-wrap gap-1.5 mt-auto pt-3 border-t border-[--border]">
+      {tags.map((tag, ti) => {
+        const tagColor = tagColors[ti % tagColors.length];
+        return (
+          <span key={tag} className="font-mono text-[10px] px-2 py-0.5 tracking-wider"
+            style={{ color: tagColor, border: `1px solid ${tagColor}33` }}>
+            [{tag}]
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
+function FeaturedCard({ project }: { project: Project }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      className="mb-6"
+    >
+      <Tilt max={3}>
+        <article
+          className="relative flex flex-col sm:flex-row gap-6 sm:gap-12 p-7 sm:p-10 overflow-hidden"
+          style={{
+            background: "linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 60%, rgba(212,175,55,0.07) 100%)",
+            border: "1px solid rgba(212,175,55,0.30)",
+            boxShadow: "0 0 50px rgba(212,175,55,0.07), 0 12px 40px rgba(0,0,0,0.4)",
+          }}
+        >
+          {/* Corner glow */}
+          <div aria-hidden className="absolute -top-20 -right-20 w-72 h-72 rounded-full pointer-events-none"
+            style={{ background: "radial-gradient(circle, rgba(212,175,55,0.12) 0%, transparent 65%)", filter: "blur(30px)" }} />
+
+          <div className="sm:w-64 shrink-0 flex flex-col gap-4">
+            <div>
+              <div className="flex items-center gap-2 mb-3 flex-wrap">
+                <span className="font-mono text-[10px] tracking-widest uppercase px-2 py-1"
+                  style={{ background: "linear-gradient(135deg, #B8921A, #D4AF37)", color: "#0B0908" }}>
+                  {project.badge}
+                </span>
+                <span className="font-mono text-[10px] text-[--muted] tracking-widest uppercase">
+                  {project.type}
+                </span>
+              </div>
+              <h3 className="font-display italic leading-tight text-[--foreground]"
+                style={{ fontSize: "clamp(34px, 4vw, 52px)" }}>
+                {project.title}
+              </h3>
+            </div>
+            <p className="font-mono text-[10px] text-[--muted-dim] tracking-wider leading-relaxed mt-auto">
+              UPLOAD → 6 SPECIALISTS → DEBATE
+              <br />→ STRATEGY → REPORT EN/TH
+            </p>
+            <Links project={project} accent="#D4AF37" />
+          </div>
+
+          <div className="flex flex-col gap-4 flex-1 min-w-0">
+            <p className="text-sm text-[--muted] leading-relaxed">{project.description}</p>
+            <ul className="space-y-1.5">
+              {project.highlights.map((h) => (
+                <li key={h} className="flex items-start gap-2.5 text-sm text-[--muted]">
+                  <span className="mt-1.75 w-1 h-1 shrink-0" style={{ background: "#D4AF37" }} />
+                  {h}
+                </li>
+              ))}
+            </ul>
+            <Tags tags={project.tags} />
+          </div>
+        </article>
+      </Tilt>
+    </motion.div>
+  );
+}
+
+function ProjectCard({ project, index }: { project: Project; index: number }) {
   const accent = cardAccents[index % cardAccents.length];
 
   return (
-    <motion.article
+    <motion.div
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: index * 0.08 }}
-      className={`group relative flex flex-col gap-4 p-6 transition-all duration-300 h-full ${featured ? "sm:flex-row sm:gap-10 sm:p-8" : ""}`}
-      style={{
-        background: featured
-          ? `linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 60%, rgba(200,168,75,0.06) 100%)`
-          : `linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%)`,
-        border: featured ? `1px solid rgba(200,168,75,0.22)` : "1px solid var(--border)",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-      }}
-      onMouseEnter={e => {
-        (e.currentTarget as HTMLElement).style.borderColor = accent.border;
-        (e.currentTarget as HTMLElement).style.boxShadow = `0 8px ${featured ? "48px" : "32px"} rgba(0,0,0,0.1), 0 0 0 1px ${accent.border}`;
-      }}
-      onMouseLeave={e => {
-        (e.currentTarget as HTMLElement).style.borderColor = featured ? "rgba(200,168,75,0.22)" : "var(--border)";
-        (e.currentTarget as HTMLElement).style.boxShadow = "0 2px 8px rgba(0,0,0,0.05)";
-      }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: (index % 3) * 0.08 }}
+      className="h-full"
     >
-      {/* Left accent bar */}
-      <div className="absolute left-0 top-0 bottom-0 w-0.5 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-bottom"
-        style={{ background: `linear-gradient(to top, ${accent.color}, transparent)` }} />
+      <Tilt>
+        <article
+          className="group relative flex flex-col gap-4 p-6 h-full transition-colors duration-300"
+          style={{
+            background: "linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%)",
+            border: "1px solid var(--border)",
+          }}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLElement).style.borderColor = accent.border;
+            (e.currentTarget as HTMLElement).style.boxShadow = `0 12px 36px rgba(0,0,0,0.45), 0 0 24px ${accent.color}14`;
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
+            (e.currentTarget as HTMLElement).style.boxShadow = "none";
+          }}
+        >
+          {/* Left accent bar */}
+          <div className="absolute left-0 top-0 bottom-0 w-0.5 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-bottom"
+            style={{ background: `linear-gradient(to top, ${accent.color}, transparent)` }} />
 
-      {/* Corner ornaments */}
-      <div className="absolute top-2 right-2" style={{ color: accent.color }}>
-        <OrnamentalCorner color={accent.color} />
-      </div>
-
-      {/* Featured: left meta column */}
-      {featured && (
-        <div className="sm:w-56 shrink-0 flex flex-col gap-4">
-          <div>
-            <span className="font-mono text-[10px] text-[--muted] tracking-widest uppercase block mb-2">
-              {project.type}
-            </span>
-            <h3 className="font-display italic leading-tight text-[--foreground]"
-              style={{ fontSize: "clamp(26px, 3vw, 38px)" }}>
-              {project.title}
-            </h3>
-          </div>
-          {project.badge && (
-            <span className="self-start font-mono text-[10px] tracking-widest uppercase px-2 py-1"
-              style={{ background: accent.color, color: "#060D10" }}>
-              {project.badge}
-            </span>
-          )}
-          <div className="flex gap-2 mt-auto pt-2">
-            {project.github && (
-              <a href={project.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub"
-                className="p-1.5 text-[--muted] transition-colors"
-                onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = accent.color}
-                onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "var(--muted)"}>
-                <GithubIcon size={15} />
-              </a>
-            )}
-            {project.demo && (
-              <a href={project.demo} target="_blank" rel="noopener noreferrer" aria-label="Live demo"
-                className="p-1.5 text-[--muted] hover:text-[--accent] transition-colors">
-                <ExternalLink size={15} />
-              </a>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Right (or full) content column */}
-      <div className="flex flex-col gap-4 flex-1 min-w-0">
-        {/* Non-featured header */}
-        {!featured && (
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -267,7 +374,7 @@ function ProjectCard({
                   <>
                     <span className="text-[--muted-dim]">·</span>
                     <span className="font-mono text-[10px] tracking-widest uppercase px-1.5 py-0.5"
-                      style={{ background: accent.color, color: "#060D10" }}>
+                      style={{ background: accent.color, color: "#0B0908" }}>
                       {project.badge}
                     </span>
                   </>
@@ -277,51 +384,24 @@ function ProjectCard({
                 {project.title}
               </h3>
             </div>
-            <div className="flex gap-1 shrink-0 mt-1">
-              {project.github && (
-                <a href={project.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub"
-                  className="p-1.5 text-[--muted] transition-colors"
-                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = accent.color}
-                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "var(--muted)"}>
-                  <GithubIcon size={15} />
-                </a>
-              )}
-              {project.demo && (
-                <a href={project.demo} target="_blank" rel="noopener noreferrer" aria-label="Live demo"
-                  className="p-1.5 text-[--muted] hover:text-[--accent] transition-colors">
-                  <ExternalLink size={15} />
-                </a>
-              )}
-            </div>
+            <Links project={project} accent={accent.color} />
           </div>
-        )}
 
-        <p className="text-sm text-[--muted] leading-relaxed">{project.description}</p>
+          <p className="text-sm text-[--muted] leading-relaxed">{project.description}</p>
 
-        <ul className="space-y-1.5">
-          {project.highlights.map((h) => (
-            <li key={h} className="flex items-start gap-2.5 text-sm text-[--muted]">
-              <span className="mt-1.75 w-1 h-1 shrink-0" style={{ background: accent.color }} />
-              {h}
-            </li>
-          ))}
-        </ul>
+          <ul className="space-y-1.5">
+            {project.highlights.map((h) => (
+              <li key={h} className="flex items-start gap-2.5 text-sm text-[--muted]">
+                <span className="mt-1.75 w-1 h-1 shrink-0" style={{ background: accent.color }} />
+                {h}
+              </li>
+            ))}
+          </ul>
 
-        {/* Tags */}
-        <div className="flex flex-wrap gap-1.5 mt-auto pt-2 border-t border-[--border]">
-          {project.tags.map((tag, ti) => {
-            const tagColors = [accent.color, "#4ECDC4", "#E8705E"];
-            const tagColor = tagColors[ti % tagColors.length];
-            return (
-              <span key={tag} className="font-mono text-[10px] px-2 py-0.5 tracking-wider"
-                style={{ color: tagColor, border: `1px solid ${tagColor}33` }}>
-                [{tag}]
-              </span>
-            );
-          })}
-        </div>
-      </div>
-    </motion.article>
+          <Tags tags={project.tags} />
+        </article>
+      </Tilt>
+    </motion.div>
   );
 }
 
@@ -330,11 +410,11 @@ export default function Projects() {
     <section id="projects" className="relative py-28 px-6 overflow-hidden">
       {/* Section background gradient */}
       <div aria-hidden className="absolute inset-0 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse 70% 60% at 0% 50%, rgba(78,205,196,0.04) 0%, transparent 60%)" }} />
+        style={{ background: "radial-gradient(ellipse 70% 60% at 0% 50%, rgba(212,175,55,0.04) 0%, transparent 60%)" }} />
 
       {/* Decorative background numeral */}
       <div aria-hidden className="absolute right-6 top-16 font-display italic text-[--foreground] select-none pointer-events-none leading-none"
-        style={{ fontSize: "clamp(180px, 25vw, 320px)", opacity: 0.025 }}>
+        style={{ fontSize: "clamp(180px, 25vw, 320px)", opacity: 0.03 }}>
         01
       </div>
 
@@ -348,11 +428,11 @@ export default function Projects() {
         >
           <div className="flex items-center gap-4 mb-8">
             <span className="font-mono text-[11px] tracking-[0.25em]"
-              style={{ background: "linear-gradient(90deg, #8A6B10, #D4AF37)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+              style={{ background: "linear-gradient(90deg, #B8921A, #F0D060)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
               01 —
             </span>
             <span className="font-mono text-[11px] text-[--muted] tracking-[0.18em]">PROJECTS</span>
-            <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(200,168,75,0.3), transparent)" }} />
+            <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(212,175,55,0.3), transparent)" }} />
           </div>
           <h2 className="font-display italic font-light text-[--foreground] leading-tight mb-4"
             style={{ fontSize: "clamp(36px, 5vw, 60px)" }}>
@@ -364,13 +444,13 @@ export default function Projects() {
           </p>
         </motion.div>
 
-        {/* All projects — uniform horizontal scroll */}
-        <div className="flex items-stretch gap-4 overflow-x-auto pb-4 -mx-6 px-6"
-          style={{ scrollSnapType: "x mandatory", scrollbarWidth: "thin", scrollbarColor: "rgba(212,175,55,0.3) transparent" }}>
+        {/* Featured */}
+        <FeaturedCard project={featuredProject} />
+
+        {/* Grid */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 items-stretch">
           {projects.map((project, i) => (
-            <div key={project.title} className="shrink-0 w-80 h-full" style={{ scrollSnapAlign: "start" }}>
-              <ProjectCard project={project} index={i} />
-            </div>
+            <ProjectCard key={project.title} project={project} index={i} />
           ))}
         </div>
 
@@ -382,7 +462,7 @@ export default function Projects() {
           className="mt-10 pt-8 border-t border-[--border]"
         >
           <a href="https://github.com/TopOfficial" target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.15em] text-[--muted] hover:text-[--accent-cyan] transition-colors group">
+            className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.15em] text-[--muted] hover:text-[--accent] transition-colors group">
             <GithubIcon size={13} />
             <span>SEE EVERYTHING ON GITHUB</span>
             <span className="group-hover:translate-x-1 transition-transform">→</span>

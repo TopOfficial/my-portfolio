@@ -91,7 +91,7 @@ export default function Experience() {
                     <h3 className="font-display italic font-light leading-none mb-1"
                       style={{
                         fontSize: "clamp(22px, 3vw, 30px)",
-                        background: `linear-gradient(135deg, #1A1612 50%, ${job.accentColor} 100%)`,
+                        background: `linear-gradient(135deg, #F4EFE6 50%, ${job.accentColor} 100%)`,
                         WebkitBackgroundClip: "text",
                         WebkitTextFillColor: "transparent",
                         backgroundClip: "text",

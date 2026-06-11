@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Bodoni_Moda, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -30,6 +30,10 @@ export const metadata: Metadata = {
       "AI/ML and Data Engineer with hands-on experience building LLM systems, RAG architectures, and data pipelines.",
     type: "website",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0B0908",
 };
 
 export default function RootLayout({
