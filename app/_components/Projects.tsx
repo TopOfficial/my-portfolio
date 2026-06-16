@@ -55,6 +55,22 @@ const featuredProject: Project = {
 
 const projects: Project[] = [
   {
+    title: "Plan-Next",
+    description:
+      "Full-stack prediction market in the Kalshi/Polymarket style. Trade YES/NO contracts through a real central limit order book — price emerges from order flow, not a formula. A market maker bot seeds bid/ask ladders and recenters toward the last trade after every fill.",
+    highlights: [
+      "Real CLOB: buy-YES @ p matches buy-NO @ q when p+q ≥ 100; exchange mints a YES/NO pair at the resting price",
+      "Market maker recenters the ladder after each fill, so buying actually moves the price persistently",
+      "Admin panel: create binary or multi-outcome markets, set opening price in satang, resolve and settle positions",
+      "FastAPI + SQLite backend; React/Vite/Tailwind SPA with live order book depth, price chart, and portfolio P&L",
+    ],
+    tags: ["Python", "FastAPI", "React", "SQLite", "Vite"],
+    type: "Personal Project",
+    github: null,
+    demo: null,
+    badge: null,
+  },
+  {
     title: "PRISM",
     description:
       "Stock investment brief web app. Enter any US ticker and get a full data snapshot — valuation, financials, earnings history, recent news, and a rule-based verdict — in seconds.",
