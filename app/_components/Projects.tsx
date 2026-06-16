@@ -1,14 +1,15 @@
 "use client";
 
 import {
+  AnimatePresence,
   motion,
   useMotionTemplate,
   useMotionValue,
   useSpring,
   useTransform,
 } from "framer-motion";
-import { ExternalLink } from "lucide-react";
-import { useRef } from "react";
+import { ExternalLink, X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 function GithubIcon({ size = 15 }: { size?: number }) {
   return (
@@ -24,6 +25,8 @@ const cardAccents = [
   { color: "#C9A030", border: "rgba(201,160,48,0.35)" },
   { color: "#B8921A", border: "rgba(184,146,26,0.35)" },
 ];
+
+type Accent = { color: string; border: string };
 
 type Project = {
   title: string;
@@ -254,6 +257,7 @@ function Links({ project, accent }: { project: Project; accent: string }) {
       {project.github && (
         <a href={project.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub"
           className="p-1.5 text-[--muted] transition-colors"
+          onClick={e => e.stopPropagation()}
           onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = accent}
           onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "var(--muted)"}>
           <GithubIcon size={15} />
@@ -261,7 +265,8 @@ function Links({ project, accent }: { project: Project; accent: string }) {
       )}
       {project.demo && (
         <a href={project.demo} target="_blank" rel="noopener noreferrer" aria-label="Live demo"
-          className="p-1.5 text-[--muted] hover:text-[--accent] transition-colors">
+          className="p-1.5 text-[--muted] hover:text-[--accent] transition-colors"
+          onClick={e => e.stopPropagation()}>
           <ExternalLink size={15} />
         </a>
       )}
@@ -286,7 +291,97 @@ function Tags({ tags }: { tags: string[] }) {
   );
 }
 
-function FeaturedCard({ project }: { project: Project }) {
+function QuickView({ project, accent, onClose }: { project: Project; accent: Accent; onClose: () => void }) {
+  useEffect(() => {
+    const y0 = window.scrollY;
+    const onScroll = () => { if (Math.abs(window.scrollY - y0) > 80) onClose(); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [onClose]);
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center p-6"
+      style={{ background: "rgba(11,9,8,0.82)", backdropFilter: "blur(6px)" }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.18 }}
+      onClick={onClose}
+    >
+      <motion.article
+        className="relative flex flex-col gap-4 p-6 w-full max-w-lg max-h-[80vh] overflow-y-auto"
+        style={{
+          background: "linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%)",
+          border: `1px solid ${accent.border}`,
+          boxShadow: `0 24px 60px rgba(0,0,0,0.6), 0 0 40px ${accent.color}18`,
+        }}
+        initial={{ scale: 0.94, opacity: 0, y: 12 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.94, opacity: 0, y: 12 }}
+        transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Left accent bar */}
+        <div className="absolute left-0 top-0 bottom-0 w-0.5"
+          style={{ background: `linear-gradient(to top, ${accent.color}, transparent)` }} />
+
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 p-1 text-[--muted] hover:text-[--foreground] transition-colors"
+          aria-label="Close"
+        >
+          <X size={14} />
+        </button>
+
+        <div className="flex items-start justify-between gap-4 pr-6">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-2 flex-wrap">
+              <span className="font-mono text-[10px] text-[--muted] tracking-widest uppercase">
+                {project.type}
+              </span>
+              {project.badge && (
+                <>
+                  <span className="text-[--muted-dim]">·</span>
+                  <span className="font-mono text-[10px] tracking-widest uppercase px-1.5 py-0.5"
+                    style={{ background: accent.color, color: "#0B0908" }}>
+                    {project.badge}
+                  </span>
+                </>
+              )}
+            </div>
+            <h3 className="font-display italic text-xl font-light text-[--foreground] leading-snug">
+              {project.title}
+            </h3>
+          </div>
+          <Links project={project} accent={accent.color} />
+        </div>
+
+        <p className="text-sm text-[--muted] leading-relaxed">{project.description}</p>
+
+        <ul className="space-y-1.5">
+          {project.highlights.map((h) => (
+            <li key={h} className="flex items-start gap-2.5 text-sm text-[--muted]">
+              <span className="mt-1.5 w-1 h-1 shrink-0 rounded-full" style={{ background: accent.color }} />
+              {h}
+            </li>
+          ))}
+        </ul>
+
+        <Tags tags={project.tags} />
+      </motion.article>
+    </motion.div>
+  );
+}
+
+function FeaturedCard({ onExpand }: { onExpand: () => void }) {
+  const project = featuredProject;
   return (
     <motion.div
       initial={{ opacity: 0, y: 32 }}
@@ -297,12 +392,13 @@ function FeaturedCard({ project }: { project: Project }) {
     >
       <Tilt max={3}>
         <article
-          className="relative flex flex-col sm:flex-row gap-6 sm:gap-12 p-7 sm:p-10 overflow-hidden"
+          className="relative flex flex-col sm:flex-row gap-6 sm:gap-12 p-7 sm:p-10 overflow-hidden cursor-pointer"
           style={{
             background: "linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 60%, rgba(212,175,55,0.07) 100%)",
             border: "1px solid rgba(212,175,55,0.30)",
             boxShadow: "0 0 50px rgba(212,175,55,0.07), 0 12px 40px rgba(0,0,0,0.4)",
           }}
+          onClick={onExpand}
         >
           {/* Corner glow */}
           <div aria-hidden className="absolute -top-20 -right-20 w-72 h-72 rounded-full pointer-events-none"
@@ -333,14 +429,6 @@ function FeaturedCard({ project }: { project: Project }) {
 
           <div className="flex flex-col gap-4 flex-1 min-w-0">
             <p className="text-sm text-[--muted] leading-relaxed">{project.description}</p>
-            <ul className="space-y-1.5">
-              {project.highlights.map((h) => (
-                <li key={h} className="flex items-start gap-2.5 text-sm text-[--muted]">
-                  <span className="mt-1.75 w-1 h-1 shrink-0" style={{ background: "#D4AF37" }} />
-                  {h}
-                </li>
-              ))}
-            </ul>
             <Tags tags={project.tags} />
           </div>
         </article>
@@ -349,7 +437,15 @@ function FeaturedCard({ project }: { project: Project }) {
   );
 }
 
-function ProjectCard({ project, index }: { project: Project; index: number }) {
+function ProjectCard({
+  project,
+  index,
+  onExpand,
+}: {
+  project: Project;
+  index: number;
+  onExpand: (project: Project, accent: Accent) => void;
+}) {
   const accent = cardAccents[index % cardAccents.length];
 
   return (
@@ -362,11 +458,15 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
     >
       <Tilt>
         <article
-          className="group relative flex flex-col gap-4 p-6 h-full transition-colors duration-300"
+          role="button"
+          tabIndex={0}
+          className="group relative flex flex-col gap-4 p-6 h-full transition-colors duration-300 cursor-pointer"
           style={{
             background: "linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%)",
             border: "1px solid var(--border)",
           }}
+          onClick={() => onExpand(project, accent)}
+          onKeyDown={e => { if (e.key === "Enter" || e.key === " ") onExpand(project, accent); }}
           onMouseEnter={e => {
             (e.currentTarget as HTMLElement).style.borderColor = accent.border;
             (e.currentTarget as HTMLElement).style.boxShadow = `0 12px 36px rgba(0,0,0,0.45), 0 0 24px ${accent.color}14`;
@@ -405,15 +505,6 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
           <p className="text-sm text-[--muted] leading-relaxed">{project.description}</p>
 
-          <ul className="space-y-1.5">
-            {project.highlights.map((h) => (
-              <li key={h} className="flex items-start gap-2.5 text-sm text-[--muted]">
-                <span className="mt-1.75 w-1 h-1 shrink-0" style={{ background: accent.color }} />
-                {h}
-              </li>
-            ))}
-          </ul>
-
           <Tags tags={project.tags} />
         </article>
       </Tilt>
@@ -422,69 +513,105 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 }
 
 export default function Projects() {
+  const [showAll, setShowAll] = useState(false);
+  const [expanded, setExpanded] = useState<{ project: Project; accent: Accent } | null>(null);
+  const INITIAL_COUNT = 6;
+  const visible = showAll ? projects : projects.slice(0, INITIAL_COUNT);
+
+  const close = useCallback(() => setExpanded(null), []);
+
+  const featuredAccent: Accent = { color: "#D4AF37", border: "rgba(212,175,55,0.30)" };
+
   return (
-    <section id="projects" className="relative py-28 px-6 overflow-hidden">
-      {/* Section background gradient */}
-      <div aria-hidden className="absolute inset-0 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse 70% 60% at 0% 50%, rgba(212,175,55,0.04) 0%, transparent 60%)" }} />
+    <>
+      <AnimatePresence>
+        {expanded && (
+          <QuickView project={expanded.project} accent={expanded.accent} onClose={close} />
+        )}
+      </AnimatePresence>
 
-      {/* Decorative background numeral */}
-      <div aria-hidden className="absolute right-6 top-16 font-display italic text-[--foreground] select-none pointer-events-none leading-none"
-        style={{ fontSize: "clamp(180px, 25vw, 320px)", opacity: 0.03 }}>
-        01
-      </div>
+      <section id="projects" className="relative py-28 px-6 overflow-hidden">
+        {/* Section background gradient */}
+        <div aria-hidden className="absolute inset-0 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse 70% 60% at 0% 50%, rgba(212,175,55,0.04) 0%, transparent 60%)" }} />
 
-      <div className="max-w-6xl mx-auto relative">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-16"
-        >
-          <div className="flex items-center gap-4 mb-8">
-            <span className="font-mono text-[11px] tracking-[0.25em]"
-              style={{ background: "linear-gradient(90deg, #B8921A, #F0D060)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-              01 —
-            </span>
-            <span className="font-mono text-[11px] text-[--muted] tracking-[0.18em]">PROJECTS</span>
-            <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(212,175,55,0.3), transparent)" }} />
-          </div>
-          <h2 className="font-display italic font-light text-[--foreground] leading-tight mb-4"
-            style={{ fontSize: "clamp(36px, 5vw, 60px)" }}>
-            Projects
-          </h2>
-          <p className="text-[--muted] max-w-lg text-sm leading-relaxed">
-            LLM systems, data pipelines, and intelligent automation — built for
-            real environments, not just demos.
-          </p>
-        </motion.div>
-
-        {/* Featured */}
-        <FeaturedCard project={featuredProject} />
-
-        {/* Grid */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 items-stretch">
-          {projects.map((project, i) => (
-            <ProjectCard key={project.title} project={project} index={i} />
-          ))}
+        {/* Decorative background numeral */}
+        <div aria-hidden className="absolute right-6 top-16 font-display italic text-[--foreground] select-none pointer-events-none leading-none"
+          style={{ fontSize: "clamp(180px, 25vw, 320px)", opacity: 0.03 }}>
+          01
         </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-10 pt-8 border-t border-[--border]"
-        >
-          <a href="https://github.com/TopOfficial" target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.15em] text-[--muted] hover:text-[--accent] transition-colors group">
-            <GithubIcon size={13} />
-            <span>SEE EVERYTHING ON GITHUB</span>
-            <span className="group-hover:translate-x-1 transition-transform">→</span>
-          </a>
-        </motion.div>
-      </div>
-    </section>
+        <div className="max-w-6xl mx-auto relative">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mb-16"
+          >
+            <div className="flex items-center gap-4 mb-8">
+              <span className="font-mono text-[11px] tracking-[0.25em]"
+                style={{ background: "linear-gradient(90deg, #B8921A, #F0D060)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                01 —
+              </span>
+              <span className="font-mono text-[11px] text-[--muted] tracking-[0.18em]">PROJECTS</span>
+              <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(212,175,55,0.3), transparent)" }} />
+            </div>
+            <h2 className="font-display italic font-light text-[--foreground] leading-tight mb-4"
+              style={{ fontSize: "clamp(36px, 5vw, 60px)" }}>
+              Projects
+            </h2>
+            <p className="text-[--muted] max-w-lg text-sm leading-relaxed">
+              LLM systems, data pipelines, and intelligent automation — built for
+              real environments, not just demos.
+            </p>
+          </motion.div>
+
+          {/* Featured */}
+          <FeaturedCard onExpand={() => setExpanded({ project: featuredProject, accent: featuredAccent })} />
+
+          {/* Grid */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 items-stretch">
+            {visible.map((project, i) => (
+              <ProjectCard
+                key={project.title}
+                project={project}
+                index={i}
+                onExpand={(p, a) => setExpanded({ project: p, accent: a })}
+              />
+            ))}
+          </div>
+
+          {projects.length > INITIAL_COUNT && (
+            <div className="mt-6 flex justify-center">
+              <button
+                onClick={() => setShowAll(s => !s)}
+                className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.15em] text-[--muted] hover:text-[--accent] transition-colors group"
+              >
+                <span>{showAll ? "SHOW LESS" : `SHOW ${projects.length - INITIAL_COUNT} MORE PROJECTS`}</span>
+                <span className={`transition-transform ${showAll ? "group-hover:-translate-y-0.5" : "group-hover:translate-y-0.5"}`}>
+                  {showAll ? "↑" : "↓"}
+                </span>
+              </button>
+            </div>
+          )}
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mt-10 pt-8 border-t border-[--border]"
+          >
+            <a href="https://github.com/TopOfficial" target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.15em] text-[--muted] hover:text-[--accent] transition-colors group">
+              <GithubIcon size={13} />
+              <span>SEE EVERYTHING ON GITHUB</span>
+              <span className="group-hover:translate-x-1 transition-transform">→</span>
+            </a>
+          </motion.div>
+        </div>
+      </section>
+    </>
   );
 }
